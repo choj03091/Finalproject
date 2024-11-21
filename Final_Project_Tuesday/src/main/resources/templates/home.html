@@ -1,38 +1,74 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/layout}">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
-<script type="text/javascript"></script>
-<style type="text/css"></style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>현재 프로젝트</title>
+<link rel="stylesheet" href="/css/layout.css">
 </head>
 <body>
-	<div layout:fragment="content">
-		<!-- header.html 파일을 불러옵니다 -->
-		<div th:replace="fragments/header :: header"></div>
 
-		<div id="container">
-			<h1>HOME</h1>
+	<div class="welcome-message">
+		<p>
+			환영합니다, <strong th:text="${username}"></strong>님!
+		</p>
+	</div>
+	<!-- 상단 헤더 -->
+	<header class="header">
+		<img src="/images/logo.png" alt="로고" class="logo">
+		<h1 class="project-name">현재 프로젝트 이름</h1>
+		<div class="header-icons">
+			<a href="/user/profile"><img src="/images/user-icon.png"
+				alt="마이페이지" class="icon"></a> <a href="/user/logout"><img
+				src="/images/logout-icon.png" alt="로그아웃" class="icon"></a>
+		</div>
+	</header>
 
-<!-- 			<p th:text="'현재 세션 mdto: ' + ${session.mdto}"></p>
- -->
+	<div class="main-container">
+		<!-- 좌측 팀원 상태 -->
+		<aside class="team-status">
+			<ul>
+				<li>팀원 1 <span class="status active"></span></li>
+				<li>팀원 2 <span class="status inactive"></span></li>
+				<li>팀원 3 <span class="status away"></span></li>
+				<li>팀원 4 <span class="status active"></span></li>
+				<li>팀원 5 <span class="status away"></span></li>
+			</ul>
+			<button class="add-member">+</button>
+		</aside>
 
-			<th:block th:if="${session.mdto==null}">
-				<p>
-					<a href="/user/login">SignIn</a> <a href="/user/addUser">SignUp</a>
-				</p>
-			</th:block>
-			<th:block th:unless="${session.mdto==null}">
-				<p>
-					<span th:text="${session.mdto.role}"></span> <span
-						th:text="${session.mdto.id}"></span> <a href="/user/logout">로그아웃</a>
-				</p>
-			</th:block>
-			<p>
-				<a href="/board/boardList">게시판</a>
-			</p>
+		<!-- 중앙 콘텐츠 -->
+		<div class="center-content">
+			<div class="work-section">
+				<div class="work-card">UI</div>
+				<div class="work-card">CODE</div>
+			</div>
+			<div class="summary-section">
+				<div class="overview">
+					<h3>프로젝트 개요</h3>
+					<p>현재 프로젝트 진행 상황</p>
+					<p>
+						<strong>전체 진행률:</strong> 75%
+					</p>
+					<div class="progress-bar">
+						<div class="progress" style="width: 75%;"></div>
+					</div>
+					<p>
+						<strong>남은 시간:</strong> 3일
+					</p>
+					<p>
+						<strong>참여 팀원:</strong> 5명
+					</p>
+				</div>
+				<div class="task-list">
+					<h3>작업 목록</h3>
+					<ul>
+						<li>디자인 초안 완성 <span class="status complete">완료</span></li>
+						<li>프론트엔드 개발 <span class="status in-progress">진행 중</span></li>
+						<li>백엔드 API 구현 <span class="status in-progress">진행 중</span></li>
+					</ul>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>
