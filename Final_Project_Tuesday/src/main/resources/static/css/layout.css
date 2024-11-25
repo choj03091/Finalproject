@@ -9,11 +9,20 @@ body {
 
 /* 로그인/회원가입 중앙 정렬 */
 .flex-center {
-    display: flex; /* Flexbox를 사용 */
-    justify-content: center; /* 수평 정렬 */
-    align-items: center; /* 수직 정렬 */
+    display: flex; /* Flexbox 사용 */
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
     min-height: 100vh; /* 화면 전체 높이 확보 */
-    background-color: #f9f9f9;
+    background-color: #f9f9f9; /* 배경색 */
+}
+
+.profile-container {
+    max-width: 600px; /* 컨테이너 너비 */
+    width: 100%; /* 반응형을 위해 너비 조정 */
+    padding: 20px; /* 내부 여백 */
+    background-color: #fff; /* 배경색 */
+    border-radius: 8px; /* 둥근 모서리 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
 }
 
 /* 컨테이너 스타일 */
@@ -222,16 +231,26 @@ body {
 }
 
 .work-card {
-    width: 150px;
-    height: 100px;
+    width: 600px;
+    height: 300px;
     background-color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 150px;
+    font-family: 'Quicksand', sans-serif;
+/*     font-style: italic; */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+}
+
+.work-card:hover {
+    background-color: #e0e0e0;
+}
+
+.work-card-link {
+    text-decoration: none;
+    color: inherit;
 }
 
 .summary-section {
@@ -240,6 +259,15 @@ body {
     width: 100%;
     max-width: 800px;
     margin-top: 20px;
+}
+.overview{
+   background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 800px !important; /* 강제 적용 */
+    margin-top: 20px;
+    font-family: 'Arial', sans-serif;
 }
 
 .overview, .task-list {
@@ -263,6 +291,29 @@ body {
     height: 100%;
 }
 
+/* 작업 목록 스타일 */
+.task-list {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 800px !important; /* 강제 적용 */
+    margin-top: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.task-list h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.task-description {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 15px;
+}
+
 .task-list ul {
     list-style: none;
     padding: 0;
@@ -270,14 +321,57 @@ body {
 }
 
 .task-list li {
-    margin-bottom: 10px;
-    font-size: 14px;
+    display: flex; /* 작업명과 상태를 가로 정렬 */
+    align-items: center; /* 세로 가운데 정렬 */
+    justify-content: space-between; /* 작업명과 상태를 양쪽으로 배치 */
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0; /* 항목 간 구분선 */
 }
 
-.task-list .status.complete {
+.task-list li:last-child {
+    border-bottom: none; /* 마지막 항목 구분선 제거 */
+}
+
+.task-item {
+    display: flex;
+    align-items: center; /* 아이콘과 작업명을 세로 가운데 정렬 */
+    
+}
+
+.task-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    display: inline-block;
+    border-radius: 50%; /* 원형 아이콘 */
+}
+
+.task-icon.complete {
+    background-color: green;
+}
+
+.task-icon.in-progress {
+    background-color: orange;
+}
+
+.task-name {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.status {
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+}
+
+.status.complete {
+   margin-right: 30px; /* 오른쪽 여백 추가 */
     color: green;
 }
 
-.task-list .status.in-progress {
+.status.in-progress {
+   margin-right: 40px; /* 오른쪽 여백 추가 */
     color: orange;
 }
