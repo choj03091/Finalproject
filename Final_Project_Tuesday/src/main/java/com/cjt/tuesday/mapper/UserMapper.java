@@ -15,5 +15,12 @@ public interface UserMapper {
 	
 	void updateUser(UserDto userDto);
 	
+	public UserDto getUser(int userId);
+
+    void updateTitle(@Param("userId") Integer userId, @Param("title") String title);
+    
+    void updatePasswordByEmail(@Param("email") String email, @Param("password") String password);
+
+
 }
 

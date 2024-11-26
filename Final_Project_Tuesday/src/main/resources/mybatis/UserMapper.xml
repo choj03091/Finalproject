@@ -14,20 +14,22 @@
 		<result column="status" property="status" />
 		<result column="created_at" property="createdAt" />
 		<result column="updated_at" property="updatedAt" />
+		<result column="profile_color" property="profileColor" />
+
+
 	</resultMap>
 
 	<!-- 이메일로 사용자 조회 -->
 	<select id="findUserByEmail" resultMap="userResultMap">
-		SELECT * FROM users WHERE email = #{email}
+		SELECT * FROM users WHERE
+		email = #{email}
 	</select>
 
 	<!-- 사용자 추가 (회원가입) -->
 	<insert id="addUser">
-		INSERT INTO users (username, email, password, title,
-		status, created_at)
-		VALUES (#{username}, #{email}, #{password},
-		#{title}, #{status},
-		NOW())
+		INSERT INTO users (username, email, password, title, status, profile_color)
+		VALUES (#{username}, #{email}, #{password}, #{title}, #{status},
+		#{profileColor})
 	</insert>
 
 	<update id="updateUser">
@@ -38,5 +40,17 @@
 		updated_at = NOW()
 		WHERE user_id = #{userId}
 	</update>
+
+	<update id="updateTitle">
+		UPDATE users
+		SET title = #{title}, updated_at = NOW()
+		WHERE user_id = #{userId};
+	</update>
+	
+	<update id="updatePasswordByEmail">
+    UPDATE users
+    SET password = #{password}, updated_at = NOW()
+    WHERE email = #{email}
+</update>
 
 </mapper>

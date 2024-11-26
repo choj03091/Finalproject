@@ -9,20 +9,143 @@ body {
 
 /* 로그인/회원가입 중앙 정렬 */
 .flex-center {
-    display: flex; /* Flexbox 사용 */
-    justify-content: center; /* 수평 중앙 정렬 */
-    align-items: center; /* 수직 중앙 정렬 */
-    min-height: 100vh; /* 화면 전체 높이 확보 */
-    background-color: #f9f9f9; /* 배경색 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5; /* 배경색 */
 }
 
+/* 프로필 컨테이너 */
 .profile-container {
-    max-width: 600px; /* 컨테이너 너비 */
-    width: 100%; /* 반응형을 위해 너비 조정 */
-    padding: 20px; /* 내부 여백 */
-    background-color: #fff; /* 배경색 */
-    border-radius: 8px; /* 둥근 모서리 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    max-width: 500px;
+    width: 100%;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-container h1 {
+    font-size: 1.5rem;
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+/* 프로필 사진 컨테이너 */
+.profile-photo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* 이름의 첫 글자를 표시하는 동그란 배경 */
+.profileInitial {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    color: white; /* 텍스트 색상 */
+    font-size: 36px;
+    font-weight: bold;
+    border-radius: 50%;
+    text-transform: uppercase;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+.profile-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.upload-btn {
+    font-size: 0.9rem;
+    padding: 5px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.upload-btn:hover {
+    background-color: #0056b3;
+}
+
+/* 입력 필드 */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* 버튼 스타일 */
+.save-btn,
+.change-password-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    color: white;
+    background-color: #28a745;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.save-btn:hover,
+.change-password-btn:hover {
+    background-color: #218838;
+}
+
+.change-password-btn {
+    background-color: #ffc107;
+    color: black;
+}
+
+.change-password-btn:hover {
+    background-color: #e0a800;
+}
+
+/* 반응형 */
+@media (max-width: 600px) {
+    .profile-container {
+        padding: 15px;
+    }
+    .form-group input,
+    .form-group select {
+        font-size: 0.8rem;
+    }
+    .save-btn,
+    .change-password-btn {
+        font-size: 0.9rem;
+    }
 }
 
 /* 컨테이너 스타일 */

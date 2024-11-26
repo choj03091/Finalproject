@@ -52,5 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
             event.preventDefault(); // 폼 제출 방지
             passwordError.style.display = "block"; // 오류 메시지 표시
         }
+		
+
+
     });
 });
