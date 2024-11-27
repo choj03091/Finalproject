@@ -7,81 +7,85 @@
 <link rel="stylesheet" href="/css/layout.css">
 </head>
 <body>
-	<div class="flex-center">
-		<div class="container profile-container">
-			<h1>프로필</h1>
+    <div class="flex-center">
+        <div class="container profile-container">
+            <h1>프로필</h1>
 
-			<!-- 알림 메시지 표시 -->
-			<div id="alertMessage">
-				<p th:if="${successMessage}" class="alert success"
-					th:text="${successMessage}"></p>
-				<p th:if="${errorMessage}" class="alert error"
-					th:text="${errorMessage}"></p>
-			</div>
-			<div class="profile-photo">
-				<div id="profilePhotoWrapper">
-					<!-- 사용자 이름의 첫 글자를 동그란 배경에 표시 -->
-					<div class="profileInitial"
-						th:style="'background-color:' + ${profileColor}"
-						th:text="${user.username.substring(0, 2)}"></div>
-				</div>
-			</div>
+            <!-- 알림 메시지 표시 -->
+            <div th:if="${successMessage}" class="alert alert-success">
+                <p th:text="${successMessage}"></p>
+            </div>
+            <div th:if="${errorMessage}" class="alert alert-danger">
+                <p th:text="${errorMessage}"></p>
+            </div>
 
-			<script src="/js/randomColor.js" defer></script>
-			<!-- JavaScript 파일 추가 -->
+            <!-- 프로필 정보 -->
+            <div class="profile-photo">
+                <div id="profilePhotoWrapper">
+                    <div class="profileInitial"
+                         th:style="'background-color:' + ${profileColor}"
+                         th:text="${user.username.substring(0, 2)}">
+                    </div>
+                </div>
+            </div>
 
-			<script src="/js/randomColor.js" defer></script>
-			<!-- JavaScript 파일 추가 -->
-			<div class="profile-section">
-				<div class="profile-info">
-					<form id="profileInfoForm" action="/user/updateTitle" method="post">
-						<div class="form-group">
-							<label for="username">이름</label> <input type="text" id="username"
-								name="username" th:value="${user.username}" readonly>
-						</div>
-						<div class="form-group">
-							<label for="email">이메일</label> <input type="email" id="email"
-								name="email" th:value="${user.email}" readonly>
-						</div>
-						<div class="form-group">
-							<label for="title">직책</label> <select id="title" name="title">
-								<option value="디자이너" th:selected="${user.title eq '디자이너'}">디자이너</option>
-								<option value="개발자" th:selected="${user.title eq '개발자'}">개발자</option>
-							</select>
-						</div>
-						<button type="submit" class="save-btn">직책 변경</button>
-					</form>
-				</div>
-			</div>
-			<div class="profile-actions">
-				<form id="passwordChangeForm" action="/user/changePassword"
-					method="post">
-					<h2>비밀번호 변경</h2>
-					<div class="form-group">
-						<label for="currentPassword">현재 비밀번호</label> <input
-							type="password" id="currentPassword" name="currentPassword"
-							required>
-					</div>
-					<div class="form-group">
-						<label for="newPassword">새 비밀번호</label> <input type="password"
-							id="newPassword" name="newPassword" required minlength="8"
-							pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}"
-							title="최소 8자, 숫자와 대소문자를 포함해야 합니다.">
-					</div>
-					<button type="submit" class="change-password-btn">비밀번호 변경</button>
-				</form>
-			</div>
-		</div>
-	</div>
+            <div class="profile-section">
+                <div class="profile-info">
+                    <form id="profileInfoForm" action="/user/updateTitle" method="post">
+                        <div class="form-group">
+                            <label for="username">이름</label>
+                            <input type="text" id="username" name="username" th:value="${user.username}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">이메일</label>
+                            <input type="email" id="email" name="email" th:value="${user.email}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="title">직책</label>
+                            <select id="title" name="title">
+                                <option value="디자이너" th:selected="${user.title eq '디자이너'}">디자이너</option>
+                                <option value="개발자" th:selected="${user.title eq '개발자'}">개발자</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="save-btn">직책 변경</button>
+                    </form>
+                </div>
+            </div>
 
+            <!-- 비밀번호 변경 -->
+            <div class="profile-actions">
+                <form id="passwordChangeForm" action="/user/changePassword" method="post">
+                    <h2>비밀번호 변경</h2>
+                    <div class="form-group">
+                        <label for="currentPassword">현재 비밀번호</label>
+                        <input type="password" id="currentPassword" name="currentPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">새 비밀번호</label>
+                        <input type="password" id="newPassword" name="newPassword" required minlength="8"
+                               pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                               title="최소 8자, 숫자와 대소문자를 포함해야 합니다.">
+                        <!-- 비밀번호 조건 설명 -->
+                        <small class="hint" style="color: gray;">비밀번호는 최소 8자 이상, 숫자와 대소문자를 포함해야 합니다.</small>
+                    </div>
+                    <button type="submit" class="change-password-btn">비밀번호 변경</button>
+                </form>
+            </div>
 
-	<script>
+            <!-- 뒤로가기 버튼 -->
+            <div class="profile-actions">
+                <button class="back-btn" onclick="window.location.href='/home'">뒤로가기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
         // 알림 메시지를 일정 시간 후 사라지게 하기
         window.addEventListener("load", function () {
-            const alertBox = document.getElementById("alertMessage");
+            const alertBox = document.querySelectorAll(".alert");
             if (alertBox) {
                 setTimeout(() => {
-                    alertBox.style.display = "none";
+                    alertBox.forEach(alert => alert.style.display = "none");
                 }, 3000); // 3초 후 숨김
             }
         });

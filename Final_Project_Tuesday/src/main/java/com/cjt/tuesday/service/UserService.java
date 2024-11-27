@@ -2,13 +2,21 @@ package com.cjt.tuesday.service;
 
 import com.cjt.tuesday.command.AddUserCommand;
 import com.cjt.tuesday.command.LoginCommand;
+import com.cjt.tuesday.dtos.PasswordResetTokenDto;
 import com.cjt.tuesday.dtos.UserDto;
 import com.cjt.tuesday.mapper.UserMapper;
+import com.cjt.tuesday.service.EmailService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -18,22 +26,34 @@ public class UserService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	private Environment env; // Spring 환경 변수 주입
+	
+    public UserService(UserMapper userMapper, EmailService emailService) {
+        this.userMapper = userMapper;
+        this.emailService = emailService;
+    }
 
 	// 로그인 처리
 	public String login(LoginCommand loginCommand, HttpServletRequest request) {
-		System.out.println("로그인 시도: 이메일 = " + loginCommand.getEmail());
+	    System.out.println("로그인 시도: 이메일 = " + loginCommand.getEmail());
 
-		UserDto userDto = userMapper.findUserByEmail(loginCommand.getEmail());
-		if (userDto != null && passwordEncoder.matches(loginCommand.getPassword(), userDto.getPassword())) {
-			System.out.println("로그인 성공");
-			HttpSession session = request.getSession();
-			session.setAttribute("userDto", userDto); // 세션에 사용자 정보 저장
-			return "redirect:/home"; // 성공 시 홈으로 이동
-		}
+	    UserDto userDto = userMapper.findUserByEmail(loginCommand.getEmail());
+	    if (userDto != null && passwordEncoder.matches(loginCommand.getPassword(), userDto.getPassword())) {
+	        System.out.println("로그인 성공");
+	        HttpSession session = request.getSession();
+	        session.setAttribute("userDto", userDto); // 세션에 사용자 정보 저장
+	        return "redirect:/home"; // 성공 시 홈으로 이동
+	    }
 
-		System.out.println("로그인 실패");
-		return "redirect:/user/login?error=true"; // 실패 시 로그인 페이지로 이동
+	    System.out.println("로그인 실패");
+	    return "redirect:/user/login"; // 실패 시 로그인 페이지로 이동
 	}
+
 
 	// 회원가입 처리
 	public void addUser(AddUserCommand addUserCommand) throws Exception {
@@ -87,7 +107,7 @@ public class UserService {
 	    userMapper.updateTitle(userId, title);
 	}
 	
-	// 비밀번호 변경 처리
+	// 프로필에서 비밀번호 변경 처리
     public void changePassword(String email, String currentPassword, String newPassword) throws Exception {
         UserDto userDto = userMapper.findUserByEmail(email);
         if (userDto == null) {
@@ -102,5 +122,92 @@ public class UserService {
         // 새 비밀번호로 업데이트
         String encodedNewPassword = passwordEncoder.encode(newPassword);
         userMapper.updatePasswordByEmail(email, encodedNewPassword);
+    }
+    
+    //비밀번호를 잊으셨나요? 재설정.
+    public void sendPasswordResetEmail(String email) throws Exception {
+        UserDto userDto = userMapper.findUserByEmail(email);
+        if (userDto == null) {
+            throw new Exception("해당 이메일로 등록된 사용자가 없습니다.");
+        }
+
+        String resetToken = UUID.randomUUID().toString();
+        LocalDateTime expiresAt = LocalDateTime.now().plusHours(1);
+        userMapper.savePasswordResetToken(userDto.getUserId(), resetToken, expiresAt);
+
+        // 동적으로 서버 URL 가져오기
+        String serverUrl = env.getProperty("app.server.url", "http://localhost:9090");
+        String resetLink = serverUrl + "/user/resetPassword?token=" + resetToken;
+
+        String emailContent = String.format(
+            "<div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>" +
+            "  <h2>안녕하세요, %s님</h2>" +
+            "  <p>비밀번호를 재설정하려면 아래 링크를 클릭하세요:</p>" +
+            "  <a href='%s'>[비밀번호 재설정 하러가기]</a>" +
+            "  <p style='margin-top: 20px;'>감사합니다.</p>" +
+            "</div>",
+            userDto.getUsername(), resetLink
+        );
+
+        emailService.sendEmail(email, "비밀번호 재설정 요청", emailContent);
+        System.out.println("비밀번호 재설정 링크 발송: " + resetLink);
+    }
+    // 토큰 검증 메서드
+    public boolean isValidPasswordResetToken(String token) {
+        PasswordResetTokenDto resetToken = userMapper.findPasswordResetToken(token);
+
+        System.out.println("[DEBUG] Reset token found: " + (resetToken != null));
+        if (resetToken == null || resetToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            System.err.println("[ERROR] Token is invalid or expired.");
+            return false;
+        }
+        System.out.println("[INFO] Token is valid.");
+        return true;
+    }
+    
+    
+    @Transactional // 트랜잭션 관리 추가
+    public void resetPassword(String token, String newPassword) throws Exception {
+        System.out.println("[INFO] Validating token: " + token);
+
+        // 1. 토큰 검증
+        PasswordResetTokenDto resetToken = userMapper.findPasswordResetToken(token);
+        if (resetToken == null) {
+            System.err.println("[ERROR] Token not found or invalid.");
+            throw new Exception("유효하지 않거나 만료된 토큰입니다.");
+        }
+
+        if (resetToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            System.err.println("[ERROR] Token has expired.");
+            throw new Exception("유효하지 않거나 만료된 토큰입니다.");
+        }
+
+        System.out.println("[INFO] Token is valid. User ID: " + resetToken.getUserId());
+
+        // 2. 새 비밀번호 암호화
+        String encryptedPassword = passwordEncoder.encode(newPassword);
+        System.out.println("[DEBUG] Encrypted password: " + encryptedPassword);
+
+        // 3. 비밀번호 업데이트 쿼리 실행
+        int rowsAffected = userMapper.updatePassword(resetToken.getUserId(), encryptedPassword);
+        System.out.println("[DEBUG] Rows affected by updatePassword: " + rowsAffected);
+
+        if (rowsAffected == 0) {
+            System.err.println("[ERROR] No rows were updated. Check the user ID.");
+            throw new Exception("비밀번호 업데이트에 실패했습니다. 사용자 ID를 확인하세요.");
+        }
+
+        // 4. 업데이트된 비밀번호 검증
+        UserDto updatedUser = userMapper.getUser(resetToken.getUserId());
+        System.out.println("[INFO] Updated user password: " + updatedUser.getPassword());
+
+        if (!passwordEncoder.matches(newPassword, updatedUser.getPassword())) {
+            System.err.println("[ERROR] Password verification failed after update.");
+            throw new Exception("비밀번호가 데이터베이스에 올바르게 저장되지 않았습니다.");
+        }
+
+        // 5. 토큰 삭제
+        userMapper.deletePasswordResetToken(token);
+        System.out.println("[INFO] Password reset token deleted.");
     }
 }
