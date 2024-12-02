@@ -1,39 +1,62 @@
 package com.cjt.tuesday.controller;
 
+import com.cjt.tuesday.dtos.ProjectDto;
 import com.cjt.tuesday.dtos.UserDto;
+import com.cjt.tuesday.service.ProjectService;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HomeController {
+	
+    @Autowired
+    private ProjectService projectService;
 
     @GetMapping("/")
     public String root(HttpSession session) {
-        // 세션에서 UserDto 확인
         UserDto user = (UserDto) session.getAttribute("userDto");
         if (user != null) {
-            // 로그인된 사용자라면 /home으로 리디렉션
-            return "redirect:/home";
+            return "redirect:/project";
         }
-        // 로그인되지 않은 사용자는 /user/login으로 리디렉션
         return "redirect:/user/login";
     }
 
     @GetMapping("/home")
-    public String home(HttpSession session, Model model) {
-        // 세션에서 UserDto 객체 가져오기
-        UserDto userDto = (UserDto) session.getAttribute("userDto");
-        if (userDto == null) {
-            // 로그인되지 않은 경우 로그인 페이지로 리디렉션
+    public String home(@RequestParam Integer projectId, HttpSession session, Model model) {
+        UserDto currentUser = (UserDto) session.getAttribute("userDto");
+        if (currentUser == null) {
             return "redirect:/user/login";
         }
 
-        // 모델에 username 추가
-        model.addAttribute("username", userDto.getUsername());
+        // 프로젝트 정보 가져오기
+        ProjectDto project = projectService.getProjectById(projectId);
+        if (project == null) {
+            model.addAttribute("errorMessage", "존재하지 않는 프로젝트입니다.");
+            return "redirect:/project";
+        }
+
+        // 팀장 정보 가져오기
+        UserDto teamLeader = projectService.getTeamLeaderByProjectId(projectId);
+
+     // 팀원 정보 가져오기
+        List<UserDto> teamMembers = projectService.getTeamMembersByProjectId(projectId);
+
+        
+        // 모델에 데이터 추가
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("projectName", project.getName());
+        model.addAttribute("teamLeader", teamLeader);
+        model.addAttribute("teamMembers", teamMembers);
+
+
         return "home"; // home.html 렌더링
     }
 }

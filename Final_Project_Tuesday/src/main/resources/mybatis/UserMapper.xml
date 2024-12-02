@@ -4,89 +4,93 @@
 
 <mapper namespace="com.cjt.tuesday.mapper.UserMapper">
 
-    <!-- UserDto 매핑 -->
-    <resultMap id="userResultMap"
-        type="com.cjt.tuesday.dtos.UserDto">
-        <id column="user_id" property="userId" />
-        <result column="username" property="username" />
-        <result column="email" property="email" />
-        <result column="password" property="password" />
-        <result column="title" property="title" />
-        <result column="status" property="status" />
-        <result column="created_at" property="createdAt" />
-        <result column="updated_at" property="updatedAt" />
-        <result column="profile_color" property="profileColor" />
-    </resultMap>
+	<!-- UserDto 매핑 -->
+	<resultMap id="userResultMap"
+		type="com.cjt.tuesday.dtos.UserDto">
+		<id column="user_id" property="userId" />
+		<result column="username" property="username" />
+		<result column="email" property="email" />
+		<result column="password" property="password" />
+		<result column="title" property="title" />
+		<result column="status" property="status" />
+		<result column="created_at" property="createdAt" />
+		<result column="updated_at" property="updatedAt" />
+		<result column="profile_color" property="profileColor" />
+	</resultMap>
 
-    <!-- PasswordResetTokenDto 매핑 -->
-    <resultMap id="passwordResetTokenResultMap"
-        type="com.cjt.tuesday.dtos.PasswordResetTokenDto">
-        <result column="user_id" property="userId" />
-        <result column="token" property="token" />
-        <result column="expires_at" property="expiresAt" />
-    </resultMap>
+	<!-- PasswordResetTokenDto 매핑 -->
+	<resultMap id="passwordResetTokenResultMap"
+		type="com.cjt.tuesday.dtos.PasswordResetTokenDto">
+		<result column="user_id" property="userId" />
+		<result column="token" property="token" />
+		<result column="expires_at" property="expiresAt" />
+	</resultMap>
 
-    <!-- 이메일로 사용자 조회 -->
-    <select id="findUserByEmail" resultMap="userResultMap">
-        SELECT * FROM users WHERE email = #{email}
-    </select>
 
-    <!-- 사용자 ID로 사용자 조회 -->
-    <select id="getUser" parameterType="int" resultMap="userResultMap">
-        SELECT * FROM users WHERE user_id = #{userId}
-    </select>
+	<!-- 사용자 ID로 사용자 조회 -->
+	<select id="getUser" parameterType="int"
+		resultMap="userResultMap">
+		SELECT * FROM users WHERE user_id = #{userId}
+	</select>
 
-    <!-- 사용자 추가 (회원가입) -->
-    <insert id="addUser">
-        INSERT INTO users (username, email, password, title, status, profile_color)
-        VALUES (#{username}, #{email}, #{password}, #{title}, #{status}, #{profileColor})
-    </insert>
+	<!-- 사용자 추가 (회원가입) -->
+	<insert id="addUser">
+		INSERT INTO users (username, email, password, title, status, profile_color)
+		VALUES (#{username}, #{email}, #{password}, #{title}, #{status},
+		#{profileColor})
+	</insert>
+	
+	<!-- 이메일로 사용자 조회 -->
+	<select id="findUserByEmail" resultMap="userResultMap">
+		SELECT * FROM users WHERE email = #{email}
+	</select>
 
-    <!-- 사용자 정보 업데이트 -->
-    <update id="updateUser">
-        UPDATE users 
-        SET username = #{username}, title = #{title}, updated_at = NOW()
-        WHERE user_id = #{userId}
-    </update>
+	<!-- 사용자 정보 업데이트 -->
+	<update id="updateUser">
+		UPDATE users
+		SET username = #{username}, title = #{title}, updated_at = NOW()
+		WHERE user_id = #{userId}
+	</update>
 
-    <!-- 사용자 직책 업데이트 -->
-    <update id="updateTitle">
-        UPDATE users 
-        SET title = #{title}, updated_at = NOW()
-        WHERE user_id = #{userId}
-    </update>
+	<!-- 사용자 직책 업데이트 -->
+	<update id="updateTitle">
+		UPDATE users
+		SET title = #{title}, updated_at = NOW()
+		WHERE user_id = #{userId}
+	</update>
 
-    <!-- 이메일로 비밀번호 업데이트 -->
-    <update id="updatePasswordByEmail">
-        UPDATE users 
-        SET password = #{password}, updated_at = NOW()
-        WHERE email = #{email}
-    </update>
+	<!-- 이메일로 비밀번호 업데이트 -->
+	<update id="updatePasswordByEmail">
+		UPDATE users
+		SET password = #{password}, updated_at = NOW()
+		WHERE email = #{email}
+	</update>
 
-    <!-- 비밀번호 재설정 토큰 저장 -->
-    <insert id="savePasswordResetToken">
-        INSERT INTO password_reset_tokens (user_id, token, expires_at)
-        VALUES (#{userId}, #{token}, #{expiresAt})
-    </insert>
+	<!-- 비밀번호 재설정 토큰 저장 -->
+	<insert id="savePasswordResetToken">
+		INSERT INTO password_reset_tokens (user_id, token, expires_at)
+		VALUES (#{userId}, #{token}, #{expiresAt})
+	</insert>
 
-    <!-- 토큰으로 사용자 조회 -->
-    <select id="findPasswordResetToken" resultMap="passwordResetTokenResultMap">
-        SELECT user_id, token, expires_at
-        FROM password_reset_tokens
-        WHERE token = #{token}
-    </select>
+	<!-- 토큰으로 사용자 조회 -->
+	<select id="findPasswordResetToken"
+		resultMap="passwordResetTokenResultMap">
+		SELECT user_id, token, expires_at
+		FROM password_reset_tokens
+		WHERE token = #{token}
+	</select>
 
-    <!-- 사용자 ID로 비밀번호 업데이트 -->
-    <update id="updatePassword">
-        UPDATE users 
-        SET password = #{password}, updated_at = NOW()
-        WHERE user_id = #{userId}
-    </update>
+	<!-- 사용자 ID로 비밀번호 업데이트 -->
+	<update id="updatePassword">
+		UPDATE users
+		SET password = #{password}, updated_at = NOW()
+		WHERE user_id = #{userId}
+	</update>
 
-    <!-- 비밀번호 재설정 토큰 삭제 -->
-    <delete id="deletePasswordResetToken">
-        DELETE FROM password_reset_tokens 
-        WHERE token = #{token}
-    </delete>
+	<!-- 비밀번호 재설정 토큰 삭제 -->
+	<delete id="deletePasswordResetToken">
+		DELETE FROM password_reset_tokens
+		WHERE token = #{token}
+	</delete>
 
 </mapper>

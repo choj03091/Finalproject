@@ -47,13 +47,12 @@ public class UserService {
 	        System.out.println("로그인 성공");
 	        HttpSession session = request.getSession();
 	        session.setAttribute("userDto", userDto); // 세션에 사용자 정보 저장
-	        return "redirect:/home"; // 성공 시 홈으로 이동
+	        return "redirect:/project"; // 성공 시 홈으로 이동
 	    }
 
 	    System.out.println("로그인 실패");
 	    return "redirect:/user/login"; // 실패 시 로그인 페이지로 이동
 	}
-
 
 	// 회원가입 처리
 	public void addUser(AddUserCommand addUserCommand) throws Exception {
@@ -92,7 +91,7 @@ public class UserService {
 	}
 
 	public boolean isEmailDuplicate(String email) {
-		return userMapper.findUserByEmail(email) != null; // 이메일이 이미 존재하면 true 반환
+		return userMapper.findUserByEmail(email) != null;
 	}
 	
 	public UserDto getUser(int userId) {
@@ -164,7 +163,6 @@ public class UserService {
         System.out.println("[INFO] Token is valid.");
         return true;
     }
-    
     
     @Transactional // 트랜잭션 관리 추가
     public void resetPassword(String token, String newPassword) throws Exception {

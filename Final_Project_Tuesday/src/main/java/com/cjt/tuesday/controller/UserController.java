@@ -58,15 +58,6 @@ public class UserController {
 	    return redirectPath; // 성공 시 리다이렉트
 	}
 
-
-	// 로그아웃 처리
-	@GetMapping("/logout")
-	public String logout(HttpSession session) {
-		System.out.println("로그아웃 처리");
-		session.invalidate(); // 세션 무효화
-		return "redirect:/user/login";
-	}
-
 	// 회원가입 폼 이동
 	@GetMapping("/addUser")
 	public String addUserForm(Model model) {
@@ -100,6 +91,7 @@ public class UserController {
 	    }
 	}
 
+	//이메일 중복체크
 	@GetMapping("/emailChk")
 	@ResponseBody
 	public Map<String, Boolean> emailChk(@RequestParam String email) {
@@ -107,6 +99,14 @@ public class UserController {
 		Map<String, Boolean> response = new HashMap<>();
 		response.put("isDuplicate", isDuplicate);
 		return response;
+	}
+
+	// 로그아웃 처리
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		System.out.println("로그아웃 처리");
+		session.invalidate(); // 세션 무효화
+		return "redirect:/user/login";
 	}
 
 	@GetMapping("/profile")
@@ -193,7 +193,7 @@ public class UserController {
 
 	    try {
 	        userService.changePassword(user.getEmail(), currentPassword, newPassword);
-	        redirectAttributes.addFlashAttribute("successMessage", "비밀번호가 성공적으로 변경되었습니다.");
+	        redirectAttributes.addFlashAttribute("successMessage", "비밀번호가 변경되었습니다.");
 	    } catch (Exception e) {
 	        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 	    }

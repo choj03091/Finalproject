@@ -5,91 +5,132 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>현재 프로젝트</title>
 <link rel="stylesheet" href="/css/layout.css">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
+<link
+	href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,600&display=swap"
+	rel="stylesheet">
+<style>
+.profileInitial {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 40px; /* 원하는 너비 */
+	height: 40px; /* 원하는 높이 */
+	border-radius: 50%; /* 원형 모양 유지 */
+	font-size: 15px; /* 텍스트 크기 */
+	color: white; /* 텍스트 색상 */
+	background-color: gray; /* 기본 배경색 */
+	text-transform: uppercase; /* 대문자 */
+}
+</style>
 </head>
 <body>
+	<!-- 상단 헤더 -->
+	<header class="header">
+		<div class="header-left">
+			<img src="/images/tuesday.png" alt="로고" class="logo">
+		</div>
+		<h1 class="project-name" th:text="${projectName}">프로젝트 이름</h1>
+		<div class="header-icons">
+			<a href="/project"><img src="/images/project-icon.png" alt="프로젝트"
+				class="icon"></a> <a href="/user/profile"><img
+				src="/images/user-icon.png" alt="마이페이지" class="icon"></a> <a
+				href="/user/logout"><img src="/images/logout-icon.png"
+				alt="로그아웃" class="icon"></a>
+		</div>
+	</header>
 
-   <!--    <div class="welcome-message">
-      <p>
-         환영합니다, <strong th:text="${username}"></strong>님!
-      </p>
-   </div> -->
-   <!-- 상단 헤더 -->
-   <header class="header">
-      <img src="/images/logo.png" alt="" class="logo">
-      <h1 class="project-name">현재 프로젝트 이름</h1>
-      <div class="header-icons">
-         <a href="/user/profile"><img src="/images/user-icon.png"
-            alt="마이페이지" class="icon"></a> <a href="/user/logout"><img
-            src="/images/logout-icon.png" alt="로그아웃" class="icon"></a>
-      </div>
-   </header>
+	<div class="main-container">
+		<!-- 좌측 팀장 정보 -->
+		<aside class="team-status">
+			<ul>
 
-   <div class="main-container">
-      <!-- 좌측 팀원 상태 -->
-      <aside class="team-status">
-         <ul>
-            <li>팀원 1 <span class="status active"></span></li>
-            <li>팀원 2 <span class="status inactive"></span></li>
-            <li>팀원 3 <span class="status away"></span></li>
-            <li>팀원 4 <span class="status active"></span></li>
-            <li>팀원 5 <span class="status away"></span></li>
-         </ul>
-         <button class="add-member">+</button>
-      </aside>
+				<!-- 팀장 정보 표시 -->
+				<li>
+					<div class="profile-info">
+						<div class="profile-photo">
+							<div id="profilePhotoWrapper">
+								<div class="profileInitial"
+									th:style="'background-color:' + ${teamLeader.profileColor}"
+									th:text="${teamLeader.username.substring(0, 2)}"></div>
+							</div>
+							<div class="status-indicator"
+								th:classappend="${teamLeader.status}"></div>
+						</div>
+						<span th:text="${teamLeader.username}">팀장 이름</span> <span
+							class="role">팀장</span>
+					</div>
+				</li>
 
-      <!-- 중앙 콘텐츠 -->
-      <div class="center-content">
-         <div class="work-section">
-            <div class="work-card"><a href="/uipage" class="work-card-link">UI</a></div>
-            <div class="work-card"><a href="/code-page" class="work-card-link">CODE</a></div>
-         </div>
-         <div class="summary-section">
-            <div class="overview">
-               <h3>프로젝트 개요</h3>
-               <p>현재 프로젝트 진행 상황</p>
-               <p>
-                  <strong>전체 진행률:</strong> 75%
-               </p>
-               <div class="progress-bar">
-                  <div class="progress" style="width: 75%;"></div>
-               </div>
-               <p>
-                  <strong>남은 시간:</strong> 3일
-               </p>
-               <p>
-                  <strong>참여 팀원:</strong> 5명
-               </p>
-            </div>
-            <div class="task-list">
-    <h3>작업 목록</h3>
-    <p class="task-description">진행 중인 작업과 완료된 작업</p>
-    <ul>
-        <li>
-            <div class="task-item">
-                <span class="task-icon complete"></span>
-                <span class="task-name">디자인 초안 완성</span>
-            </div>
-            <span class="status complete">완료</span>
-        </li>
-        <li>
-            <div class="task-item">
-                <span class="task-icon in-progress"></span>
-                <span class="task-name">프론트엔드 개발</span>
-            </div>
-            <span class="status in-progress">진행 중</span>
-        </li>
-        <li>
-            <div class="task-item">
-                <span class="task-icon in-progress"></span>
-                <span class="task-name">백엔드 API 구현</span>
-            </div>
-            <span class="status in-progress">진행 중</span>
-        </li>
-    </ul>
-</div>
+				<!-- 팀원 정보 표시 -->
+				<li th:each="member : ${teamMembers}">
+					<div class="profile-info">
+						<div class="profile-photo">
+							<div id="profilePhotoWrapper">
+								<div class="profileInitial"
+									th:style="'background-color:' + ${member.profileColor}"
+									th:text="${member.username.substring(0, 2)}"></div>
+								<div class="status-indicator" th:classappend="${member.status}"></div>
+							</div>
+						</div>
+						<span th:text="${member.username}">팀원 이름</span>
+					</div>
+				</li>
+			</ul>
+		</aside>
 
-      </div>
-   </div>
+		<!-- 중앙 콘텐츠 -->
+		<div class="center-content">
+			<div class="work-section">
+				<div class="work-card">
+					<a href="/uipage" class="work-card-link">UI</a>
+				</div>
+				<div class="work-card">
+					<a href="/code-page" class="work-card-link">CODE</a>
+				</div>
+			</div>
+			<div class="summary-section">
+				<div class="overview">
+					<h3>프로젝트 개요</h3>
+					<p>현재 프로젝트 진행 상황</p>
+					<p>
+						<strong>전체 진행률:</strong> 75%
+					</p>
+					<div class="progress-bar">
+						<div class="progress" style="width: 75%;"></div>
+					</div>
+					<p>
+						<strong>남은 시간:</strong> 3일
+					</p>
+					<p>
+						<strong>참여 팀원:</strong> 팀원 없음
+					</p>
+				</div>
+				<div class="task-list">
+					<h3>작업 목록</h3>
+					<p class="task-description">진행 중인 작업과 완료된 작업</p>
+					<ul>
+						<li>
+							<div class="task-item">
+								<span class="task-icon complete"></span> <span class="task-name">디자인
+									초안 완성</span>
+							</div> <span class="status complete">완료</span>
+						</li>
+						<li>
+							<div class="task-item">
+								<span class="task-icon in-progress"></span> <span
+									class="task-name">프론트엔드 개발</span>
+							</div> <span class="status in-progress">진행 중</span>
+						</li>
+						<li>
+							<div class="task-item">
+								<span class="task-icon in-progress"></span> <span
+									class="task-name">백엔드 API 구현</span>
+							</div> <span class="status in-progress">진행 중</span>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+		</div>
 </body>
 </html>
