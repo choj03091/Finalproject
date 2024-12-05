@@ -2,6 +2,7 @@ package com.cjt.tuesday.command;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class LoginCommand {
 
@@ -10,6 +11,7 @@ public class LoginCommand {
     private String email;
 
     @NotBlank(message = "비밀번호를 입력해주세요.")
+    @Size(min = 8, message = "비밀번호는 최소 8자 이상이어야 합니다.")
     private String password;
 
     // Getters and Setters
