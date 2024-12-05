@@ -6,131 +6,180 @@
 <title>현재 프로젝트</title>
 <link rel="stylesheet" href="/css/layout.css">
 <link
-	href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,600&display=swap"
-	rel="stylesheet">
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,600&display=swap"
+    rel="stylesheet">
 <style>
 .profileInitial {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 40px; /* 원하는 너비 */
-	height: 40px; /* 원하는 높이 */
-	border-radius: 50%; /* 원형 모양 유지 */
-	font-size: 15px; /* 텍스트 크기 */
-	color: white; /* 텍스트 색상 */
-	background-color: gray; /* 기본 배경색 */
-	text-transform: uppercase; /* 대문자 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px; /* 원하는 너비 */
+    height: 40px; /* 원하는 높이 */
+    border-radius: 50%; /* 원형 모양 유지 */
+    font-size: 15px; /* 텍스트 크기 */
+    color: white; /* 텍스트 색상 */
+    background-color: gray; /* 기본 배경색 */
+    text-transform: uppercase; /* 대문자 */
+}
+
+.alert {
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    text-align: center;
 }
 </style>
 </head>
 <body>
-	<!-- 상단 헤더 -->
-	<header class="header">
-		<div class="header-left">
-			<img src="/images/tuesday.png" alt="로고" class="logo">
-		</div>
-		<h1 class="project-name" th:text="${projectName}">프로젝트 이름</h1>
-		<div class="header-icons">
-			<a href="/project"><img src="/images/project-icon.png" alt="프로젝트"
-				class="icon"></a> <a href="/user/profile"><img
-				src="/images/user-icon.png" alt="마이페이지" class="icon"></a> <a
-				href="/user/logout"><img src="/images/logout-icon.png"
-				alt="로그아웃" class="icon"></a>
-		</div>
-	</header>
+    <!-- 성공 메시지 -->
+    <div id="inviteSuccessMessage" th:if="${inviteSuccess}" class="alert">
+        <p th:text="${inviteSuccess}"></p>
+    </div>
 
-	<div class="main-container">
-		<!-- 좌측 팀장 정보 -->
-		<aside class="team-status">
-			<ul>
+    <!-- 상단 헤더 -->
+    <header class="header">
+        <div class="header-left">
+            <img src="/images/tuesday.png" alt="로고" class="logo">
+        </div>
+        <h1 class="project-name" th:text="${projectName}">프로젝트 이름</h1>
+        <div class="header-icons">
+            <a href="/project"><img src="/images/project-icon.png" alt="프로젝트" class="icon"></a>
+            <a href="/user/profile"><img src="/images/user-icon.png" alt="마이페이지" class="icon"></a>
+            <a href="/user/logout"><img src="/images/logout-icon.png" alt="로그아웃" class="icon"></a>
+        </div>
+    </header>
 
-				<!-- 팀장 정보 표시 -->
-				<li>
-					<div class="profile-info">
-						<div class="profile-photo">
-							<div id="profilePhotoWrapper">
-								<div class="profileInitial"
-									th:style="'background-color:' + ${teamLeader.profileColor}"
-									th:text="${teamLeader.username.substring(0, 2)}"></div>
-							</div>
-							<div class="status-indicator"
-								th:classappend="${teamLeader.status}"></div>
-						</div>
-						<span th:text="${teamLeader.username}">팀장 이름</span> <span
-							class="role">팀장</span>
-					</div>
-				</li>
+    <div class="main-container">
+        <!-- 좌측 팀장 정보 -->
+        <aside class="team-status">
+            <ul>
+                <!-- 팀장 정보 표시 -->
+                <li>
+                    <div class="profile-info">
+                        <div class="profile-photo">
+                            <div id="profilePhotoWrapper">
+                                <div class="profileInitial"
+                                    th:style="'background-color:' + ${teamLeader.profileColor}"
+                                    th:text="${teamLeader.username.substring(0, 2)}"></div>
+                                <div class="status-indicator"
+                                    th:classappend="${teamLeader.status}"></div>
+                            </div>
+                        </div>
+                        <div class="text-info">
+                            <span class="username" th:text="${teamLeader.username}">팀장 이름</span>
+                            <span class="role" th:text="'팀장'"></span>
+                            <span class="status-text"
+                                th:text="${teamLeader.status == 'active' ? '활동 중' : (teamLeader.status == 'away' ? '자리 비움' : '오프라인')}"></span>
+                        </div>
+                    </div>
+                </li>
 
-				<!-- 팀원 정보 표시 -->
-				<li th:each="member : ${teamMembers}">
-					<div class="profile-info">
-						<div class="profile-photo">
-							<div id="profilePhotoWrapper">
-								<div class="profileInitial"
-									th:style="'background-color:' + ${member.profileColor}"
-									th:text="${member.username.substring(0, 2)}"></div>
-								<div class="status-indicator" th:classappend="${member.status}"></div>
-							</div>
-						</div>
-						<span th:text="${member.username}">팀원 이름</span>
-					</div>
-				</li>
-			</ul>
-		</aside>
+                <!-- 팀원 정보 표시 -->
+                <li th:each="member : ${teamMembers}">
+                    <div class="profile-info">
+                        <div class="profile-photo">
+                            <div id="profilePhotoWrapper">
+                                <div class="profileInitial"
+                                    th:style="'background-color:' + ${member.profileColor}"
+                                    th:text="${member.username.substring(0, 2)}"></div>
+                                <div class="status-indicator" th:classappend="${member.status}"></div>
+                            </div>
+                        </div>
+                        <div class="text-info">
+                            <span class="username" th:text="${member.username}">팀원 이름</span>
+                            <span class="role" th:text="'팀원'"></span>
+                            <span class="status-text"
+                                th:text="${member.status == 'active' ? '활동 중' : (member.status == 'away' ? '자리 비움' : '오프라인')}"></span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <!-- 초대 버튼 -->
+            <button id="inviteButton" class="invite-btn" th:data-project-id="${projectId}">팀원 초대</button>
+        </aside>
 
-		<!-- 중앙 콘텐츠 -->
-		<div class="center-content">
-			<div class="work-section">
-				<div class="work-card">
-					<a href="/uipage" class="work-card-link">UI</a>
-				</div>
-				<div class="work-card">
-					<a href="/code-page" class="work-card-link">CODE</a>
-				</div>
-			</div>
-			<div class="summary-section">
-				<div class="overview">
-					<h3>프로젝트 개요</h3>
-					<p>현재 프로젝트 진행 상황</p>
-					<p>
-						<strong>전체 진행률:</strong> 75%
-					</p>
-					<div class="progress-bar">
-						<div class="progress" style="width: 75%;"></div>
-					</div>
-					<p>
-						<strong>남은 시간:</strong> 3일
-					</p>
-					<p>
-						<strong>참여 팀원:</strong> 팀원 없음
-					</p>
-				</div>
-				<div class="task-list">
-					<h3>작업 목록</h3>
-					<p class="task-description">진행 중인 작업과 완료된 작업</p>
-					<ul>
-						<li>
-							<div class="task-item">
-								<span class="task-icon complete"></span> <span class="task-name">디자인
-									초안 완성</span>
-							</div> <span class="status complete">완료</span>
-						</li>
-						<li>
-							<div class="task-item">
-								<span class="task-icon in-progress"></span> <span
-									class="task-name">프론트엔드 개발</span>
-							</div> <span class="status in-progress">진행 중</span>
-						</li>
-						<li>
-							<div class="task-item">
-								<span class="task-icon in-progress"></span> <span
-									class="task-name">백엔드 API 구현</span>
-							</div> <span class="status in-progress">진행 중</span>
-						</li>
-					</ul>
-				</div>
-
-			</div>
-		</div>
+        <!-- 중앙 콘텐츠 -->
+        <div class="center-content">
+            <div class="work-section">
+                <div class="work-card">
+                    <a href="/uipage" class="work-card-link">UI</a>
+                </div>
+                <div class="work-card">
+                    <a href="/code-page" class="work-card-link">CODE</a>
+                </div>
+            </div>
+            <div class="summary-section">
+                <div class="overview">
+                    <h3>프로젝트 개요</h3>
+                    <p>현재 프로젝트 진행 상황</p>
+                    <p><strong>전체 진행률:</strong> 75%</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 75%;"></div>
+                    </div>
+                    <p><strong>남은 시간:</strong> 3일</p>
+                    <p><strong>참여 팀원:</strong> 팀원 없음</p>
+                </div>
+                <div class="task-list">
+                    <h3>작업 목록</h3>
+                    <p class="task-description">진행 중인 작업과 완료된 작업</p>
+                    <ul>
+                        <li>
+                            <div class="task-item">
+                                <span class="task-icon complete"></span>
+                                <span class="task-name">디자인 초안 완성</span>
+                            </div>
+                            <span class="status complete">완료</span>
+                        </li>
+                        <li>
+                            <div class="task-item">
+                                <span class="task-icon in-progress"></span>
+                                <span class="task-name">프론트엔드 개발</span>
+                            </div>
+                            <span class="status in-progress">진행 중</span>
+                        </li>
+                        <li>
+                            <div class="task-item">
+                                <span class="task-icon in-progress"></span>
+                                <span class="task-name">백엔드 API 구현</span>
+                            </div>
+                            <span class="status in-progress">진행 중</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
+<script>
+    // 성공 메시지를 2초 후에 숨김
+    const successMessage = document.getElementById('inviteSuccessMessage');
+    if (successMessage) {
+        setTimeout(() => {
+            successMessage.style.transition = 'opacity 0.5s';
+            successMessage.style.opacity = '0';
+            setTimeout(() => successMessage.remove(), 500);
+        }, 2000);
+    }
+
+    // 초대 버튼 이벤트 리스너
+    document.getElementById('inviteButton').addEventListener('click', function () {
+        const projectId = this.getAttribute('data-project-id');
+        if (!projectId || projectId === "null") {
+            alert('프로젝트 ID가 유효하지 않습니다.');
+            return;
+        }
+        window.location.href = '/invitations/invite?projectId=' + projectId;
+    });
+</script>
+
 </html>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cjt.tuesday.mapper.InvitationMapper">
+
+	<resultMap id="invitationResultMap"
+		type="com.cjt.tuesday.dtos.InvitationDto">
+		<id column="id" property="id" />
+		<result column="project_id" property="projectId" />
+		<result column="sender_id" property="senderId" />
+		<result column="recipient_email" property="recipientEmail" />
+		<result column="status" property="status" />
+		<result column="created_at" property="createdAt" />
+		<result column="updated_at" property="updatedAt" />
+	</resultMap>
+
+	<select id="findProjectById"
+		resultType="com.cjt.tuesday.dtos.ProjectDto">
+		SELECT * FROM projects WHERE id = #{projectId}
+	</select>
+
+	<select id="findInvitationById" resultMap="invitationResultMap">
+		SELECT * FROM invitations WHERE id = #{id};
+	</select>
+
+	<select id="getInvitationById" parameterType="int"
+		resultType="com.cjt.tuesday.dtos.InvitationDto">
+		SELECT * FROM invitations WHERE id = #{id}
+	</select>
+
+	<insert id="addUserToProjectByEmail">
+		INSERT INTO project_members (project_id, user_id)
+		SELECT #{projectId}, u.user_id
+		FROM users u
+		WHERE u.email = #{email};
+	</insert>
+
+	<insert id="addUserToProjectByInvitationId">
+		INSERT INTO project_members (project_id, user_id)
+		SELECT i.project_id, u.user_id
+		FROM invitations i
+		JOIN users u ON
+		u.email = i.recipient_email
+		WHERE i.id = #{id};
+	</insert>
+
+	<!-- 초대 생성 -->
+	<insert id="saveInvitation"
+		parameterType="com.cjt.tuesday.dtos.InvitationDto"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO invitations
+		(project_id, sender_id, recipient_email, status,
+		created_at)
+		VALUES
+		(#{projectId}, #{senderId}, #{recipientEmail}, #{status}, NOW());
+	</insert>
+
+	<!-- 초대 수락 시 팀원 추가 -->
+	<insert id="addToProjectMembers">
+		INSERT INTO project_members (project_id, user_id)
+		VALUES (#{projectId}, #{userId});
+	</insert>
+
+	<!-- 특정 프로젝트의 초대 목록 가져오기 -->
+	<select id="getInvitationsByProjectId"
+		resultType="com.cjt.tuesday.dtos.InvitationDto">
+		SELECT
+		id,
+		project_id AS projectId,
+		sender_id AS senderId,
+		recipient_email AS recipientEmail,
+		status,
+		created_at AS createdAt,
+		updated_at AS updatedAt
+		FROM invitations
+		WHERE project_id =
+		#{projectId};
+	</select>
+
+	<!-- 특정 사용자의 초대 목록 가져오기 -->
+	<select id="getInvitationsByRecipientEmail"
+		resultType="com.cjt.tuesday.dtos.InvitationDto">
+		SELECT
+		id,
+		project_id AS projectId,
+		sender_id AS senderId,
+		recipient_email AS recipientEmail,
+		status,
+		created_at AS createdAt,
+		updated_at AS updatedAt
+		FROM invitations
+		WHERE recipient_email =
+		#{recipientEmail};
+	</select>
+
+	<!-- 초대 상태 업데이트 -->
+	<update id="updateInvitationStatus">
+		UPDATE invitations
+		SET status = #{status}, updated_at
+		= NOW()
+		WHERE id = #{id};
+	</update>
+
+</mapper>

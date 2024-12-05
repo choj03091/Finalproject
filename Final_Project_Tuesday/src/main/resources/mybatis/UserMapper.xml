@@ -36,19 +36,33 @@
 	<!-- 사용자 추가 (회원가입) -->
 	<insert id="addUser">
 		INSERT INTO users (username, email, password, title, status, profile_color)
-		VALUES (#{username}, #{email}, #{password}, #{title}, #{status},
-		#{profileColor})
+		VALUES (#{username}, #{email}, #{password}, #{title}, 'inactive',
+		#{profileColor});
 	</insert>
-	
+
 	<!-- 이메일로 사용자 조회 -->
-	<select id="findUserByEmail" resultMap="userResultMap">
-		SELECT * FROM users WHERE email = #{email}
+	<!-- <select id="findUserByEmail" resultType="com.cjt.tuesday.dtos.UserDto"> 
+		SELECT * FROM users WHERE email = #{email}; </select> -->
+
+	<update id="updateStatus">
+		UPDATE users
+		SET status = #{status}
+		WHERE user_id =
+		#{userId};
+	</update>
+
+	<select id="findUserByEmail" resultMap="userResultMap"> SELECT * FROM
+		users WHERE
+		email = #{email}
 	</select>
+
+
 
 	<!-- 사용자 정보 업데이트 -->
 	<update id="updateUser">
 		UPDATE users
-		SET username = #{username}, title = #{title}, updated_at = NOW()
+		SET username = #{username}, title =
+		#{title}, updated_at = NOW()
 		WHERE user_id = #{userId}
 	</update>
 
@@ -62,13 +76,15 @@
 	<!-- 이메일로 비밀번호 업데이트 -->
 	<update id="updatePasswordByEmail">
 		UPDATE users
-		SET password = #{password}, updated_at = NOW()
+		SET password = #{password}, updated_at =
+		NOW()
 		WHERE email = #{email}
 	</update>
 
 	<!-- 비밀번호 재설정 토큰 저장 -->
 	<insert id="savePasswordResetToken">
-		INSERT INTO password_reset_tokens (user_id, token, expires_at)
+		INSERT INTO password_reset_tokens (user_id, token,
+		expires_at)
 		VALUES (#{userId}, #{token}, #{expiresAt})
 	</insert>
 
@@ -83,14 +99,16 @@
 	<!-- 사용자 ID로 비밀번호 업데이트 -->
 	<update id="updatePassword">
 		UPDATE users
-		SET password = #{password}, updated_at = NOW()
+		SET password = #{password}, updated_at =
+		NOW()
 		WHERE user_id = #{userId}
 	</update>
 
 	<!-- 비밀번호 재설정 토큰 삭제 -->
 	<delete id="deletePasswordResetToken">
 		DELETE FROM password_reset_tokens
-		WHERE token = #{token}
+		WHERE token =
+		#{token}
 	</delete>
 
 </mapper>

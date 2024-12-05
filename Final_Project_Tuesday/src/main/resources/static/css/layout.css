@@ -34,17 +34,15 @@ body {
 }
 /* 프로필 사진 컨테이너 */
 .profile-photo {
-	position: relative; /* 상태 표시를 프로필에 겹치기 위해 설정 */
-	display: inline-block;
-	justify-content: center;
-	align-items: center;
-	margin-bottom: 20px;
+    position: relative;
+    width: 50px;
+    height: 50px;
 }
 
 .status-indicator {
     position: absolute;
     bottom: 0;
-    right: 0;
+    right: -7px;
     width: 20px; /* 상태 표시 동그라미 크기 */
     height: 20px;
     border-radius: 50%;
@@ -52,17 +50,29 @@ body {
 }
 
 .status-indicator.active {
-    background-color: red; /* 활성 상태 */
+    background-color: green; /* 활성 상태 */
 }
 
 .status-indicator.away {
-    background-color: green; /* 자리 비움 상태 */
+    background-color: yellow; /* 자리 비움 상태 */
 }
 
 .status-indicator.inactive {
-    background-color: yellow; /* 비활성 상태 */
+    background-color: black; /* 비활성 상태 */
 }
 
+/* 상태 텍스트 */
+.status-text {
+    font-size: 14px;
+    color: #555;
+    margin-left: 10px; /* 텍스트 간 간격 */
+}
+
+/* 프로필 세부 정보 정렬 */
+.profile-details {
+    display: flex;
+    flex-direction: column;
+}
 /* 이름의 첫 글자를 표시하는 동그란 배경 */
 .profileInitial {
 	display: flex;
@@ -682,4 +692,20 @@ body {
 	border-radius: 5px;
 	cursor: pointer;
 	margin-left: 10px;
+}
+
+.invite-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #007bff; /* 파란색 */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.invite-btn:hover {
+    background-color: #0056b3; /* 더 진한 파란색 */
 }

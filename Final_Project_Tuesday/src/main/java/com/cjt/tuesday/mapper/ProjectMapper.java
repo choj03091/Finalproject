@@ -13,9 +13,15 @@ public interface ProjectMapper {
 
     // 사용자 ID로 프로젝트 목록 가져오기
     List<ProjectDto> findProjectsByUserId(@Param("userId") Integer userId);
+    
+    List<ProjectDto> findAccessibleProjects(@Param("userId") Integer userId);
+
 
     // 프로젝트 ID로 단일 프로젝트 가져오기
     ProjectDto findProjectById(@Param("projectId") Integer projectId);
+    
+    // 프로젝트 이름 가져오기
+    String findProjectNameById(@Param("projectId") Integer projectId);
 
     // 새 프로젝트 추가
     void addProject(ProjectDto project);

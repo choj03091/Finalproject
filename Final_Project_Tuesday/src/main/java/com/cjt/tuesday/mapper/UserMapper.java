@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 
 @Mapper
 public interface UserMapper {
+	
+    void updateStatus(@Param("userId") Integer userId, @Param("status") String status);
 
 	// 이메일로 사용자 조회
 	UserDto findUserByEmail(String email);

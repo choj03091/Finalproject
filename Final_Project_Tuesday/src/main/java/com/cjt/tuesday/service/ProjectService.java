@@ -20,6 +20,11 @@ public class ProjectService {
 		return projectMapper.findProjectsByUserId(userId);
 	}
 
+	public List<ProjectDto> getAccessibleProjects(Integer userId) {
+	    // 사용자가 생성한 프로젝트 + 초대받아 참여한 프로젝트
+	    return projectMapper.findAccessibleProjects(userId);
+	}
+	
 	// 프로젝트 ID로 팀장 정보 가져오기
 	public UserDto getTeamLeaderByProjectId(Integer projectId) {
 		return projectMapper.findTeamLeader(projectId);
@@ -41,10 +46,18 @@ public class ProjectService {
 
 	// 새 프로젝트 추가, 자동으로 팀장 설정.
 	public void addProject(ProjectDto project, Integer userId) {
-		project.setUserId(userId); // 프로젝트 생성자
-		project.setTeamLeaderId(userId); // 생성자를 팀장으로 설정
-		projectMapper.addProject(project);
+	    if (userId == null) {
+	        throw new IllegalArgumentException("사용자 ID가 필요합니다.");
+	    }
+
+	    // 팀장 ID와 사용자 ID를 설정
+	    project.setUserId(userId);
+	    project.setTeamLeaderId(userId);
+
+	    // 프로젝트 삽입
+	    projectMapper.addProject(project);
 	}
+	
 	// 프로젝트 이름 업데이트
 	public void updateProjectName(Integer projectId, String name) {
 		projectMapper.updateProjectName(projectId, name);
@@ -54,4 +67,5 @@ public class ProjectService {
 	public void deleteProject(Integer projectId) {
 		projectMapper.deleteProject(projectId);
 	}
+	
 }

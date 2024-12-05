@@ -4,6 +4,7 @@ import com.cjt.tuesday.command.AddUserCommand;
 import com.cjt.tuesday.command.LoginCommand;
 import com.cjt.tuesday.dtos.UserDto;
 import com.cjt.tuesday.service.UserService;
+import com.cjt.tuesday.mapper.UserMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -29,6 +30,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private UserMapper userMapper;
 
 	// 로그인 폼 이동
 	@GetMapping("/login")
@@ -42,10 +46,10 @@ public class UserController {
 	                    BindingResult result,
 	                    Model model,
 	                    HttpServletRequest request) {
-		if (result.hasErrors()) {
-		    model.addAttribute("errorMessage", "아이디 또는 비밀번호가 틀립니다.");
-		    return "user/login";
-		}
+	    if (result.hasErrors()) {
+	        model.addAttribute("errorMessage", "아이디 또는 비밀번호가 틀립니다.");
+	        return "user/login";
+	    }
 
 	    String redirectPath = userService.login(loginCommand, request);
 
@@ -55,8 +59,19 @@ public class UserController {
 	        return "user/login";
 	    }
 
-	    return redirectPath; // 성공 시 리다이렉트
+	    // 초대 수락 로직 추가
+	    HttpSession session = request.getSession();
+	    Integer inviteId = (Integer) session.getAttribute("inviteId");
+
+	    if (inviteId != null) {
+	        // 초대 ID가 존재하면 초대 수락으로 리디렉트
+	        session.removeAttribute("inviteId"); // 초대 ID 제거
+	        return "redirect:/invitations/accept?id=" + inviteId;
+	    }
+
+	    return redirectPath; // 초대와 관계없는 일반 로그인 처리
 	}
+
 
 	// 회원가입 폼 이동
 	@GetMapping("/addUser")
@@ -104,11 +119,16 @@ public class UserController {
 	// 로그아웃 처리
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
-		System.out.println("로그아웃 처리");
-		session.invalidate(); // 세션 무효화
-		return "redirect:/user/login";
-	}
+	    UserDto userDto = (UserDto) session.getAttribute("userDto");
 
+	    if (userDto != null) {
+	        // 상태를 inactive로 업데이트
+	        userMapper.updateStatus(userDto.getUserId(), "inactive");
+	    }
+
+	    session.invalidate(); // 세션 무효화
+	    return "redirect:/user/login"; // 로그인 페이지로 리디렉션
+	}
 	@GetMapping("/profile")
 	public String userProfile(HttpSession session, Model model) {
 	    UserDto userDto = (UserDto) session.getAttribute("userDto");

@@ -33,6 +33,10 @@ public class UserService {
 	@Autowired
 	private Environment env; // Spring 환경 변수 주입
 	
+	public UserDto findUserByEmail(String email) {
+	    return userMapper.findUserByEmail(email);
+	}
+	
     public UserService(UserMapper userMapper, EmailService emailService) {
         this.userMapper = userMapper;
         this.emailService = emailService;
@@ -47,6 +51,10 @@ public class UserService {
 	        System.out.println("로그인 성공");
 	        HttpSession session = request.getSession();
 	        session.setAttribute("userDto", userDto); // 세션에 사용자 정보 저장
+	        
+	        // 로그인 시 status를 active로 업데이트
+	        userMapper.updateStatus(userDto.getUserId(), "active");
+	        
 	        return "redirect:/project"; // 성공 시 홈으로 이동
 	    }
 
