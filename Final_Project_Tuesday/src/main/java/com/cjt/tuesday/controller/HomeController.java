@@ -32,12 +32,12 @@ public class HomeController {
 	@GetMapping("/home")
 	public String home(@RequestParam Integer projectId, HttpSession session, Model model) {
 		UserDto currentUser = (UserDto) session.getAttribute("userDto");
-		
-	    if (projectId == null) {
-	        model.addAttribute("errorMessage", "프로젝트 ID가 제공되지 않았습니다.");
-	        return "redirect:/project"; // 프로젝트 목록으로 리디렉션
-	    }
-	    
+
+		if (projectId == null) {
+			model.addAttribute("errorMessage", "프로젝트 ID가 제공되지 않았습니다.");
+			return "redirect:/project"; // 프로젝트 목록으로 리디렉션
+		}
+
 		if (currentUser == null) {
 			return "redirect:/user/login";
 		}
@@ -78,6 +78,9 @@ public class HomeController {
 
 		return "home"; // home.html 렌더링
 	}
-
+	@GetMapping("/uipage") // /uipage URL을 매핑
+	public String getUiPage() {
+		return "uipage"; // templates/uipage.html 반환
+	}
 
 }
