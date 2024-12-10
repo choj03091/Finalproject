@@ -21,7 +21,7 @@ public class EmailService {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-            helper.setFrom("cjt0309@naver.com");
+            helper.setFrom("tuesdayhelp@naver.com");
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlContent, true); // HTML 형식으로 이메일 내용 설정

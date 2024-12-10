@@ -65,9 +65,10 @@ public class InvitationService {
 		invitation.setStatus("sent");
 
 		invitationMapper.saveInvitation(invitation);
-
-		String acceptUrl = "http://192.168.22.108:9090/invitations/accept?id=" + invitation.getId();
-		String declineUrl = "http://192.168.22.108:9090/invitations/decline?id=" + invitation.getId();
+		
+		//와이파이마다 다르게.
+		String acceptUrl = "http://192.168.0.2:80/invitations/accept?id=" + invitation.getId();
+		String declineUrl = "http://192.168.0.2:80/invitations/decline?id=" + invitation.getId();
 
 		String subject = "프로젝트 초대: " + projectName;
 		String htmlContent = String.format(

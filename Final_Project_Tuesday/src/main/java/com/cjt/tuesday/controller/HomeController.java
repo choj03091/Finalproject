@@ -1,4 +1,4 @@
-package com.cjt.tuesday.controller;
+	package com.cjt.tuesday.controller;
 
 import com.cjt.tuesday.dtos.ProjectDto;
 import com.cjt.tuesday.dtos.UserDto;
@@ -24,18 +24,22 @@ public class HomeController {
 	public String root(HttpSession session) {
 		UserDto user = (UserDto) session.getAttribute("userDto");
 		if (user != null) {
-			return "redirect:/project";
+			return "redirect:/project/list";
 		}
 		return "redirect:/user/login";
 	}
 
 	@GetMapping("/home")
-	public String home(@RequestParam Integer projectId, HttpSession session, Model model) {
+	public String  home(@RequestParam Integer projectId, HttpSession session, Model model) {
+		
+	    System.out.println("Received projectId: " + projectId);
+	    model.addAttribute("projectId", projectId);
+	    
 		UserDto currentUser = (UserDto) session.getAttribute("userDto");
 
 		if (projectId == null) {
 			model.addAttribute("errorMessage", "프로젝트 ID가 제공되지 않았습니다.");
-			return "redirect:/project"; // 프로젝트 목록으로 리디렉션
+			return "redirect:/project/list"; // 프로젝트 목록으로 리디렉션
 		}
 
 		if (currentUser == null) {
@@ -46,11 +50,8 @@ public class HomeController {
 		ProjectDto project = projectService.getProjectById(projectId);
 		if (project == null) {
 			model.addAttribute("errorMessage", "존재하지 않는 프로젝트입니다.");
-			return "redirect:/project";
+			return "redirect:/project/list";
 		}
-
-		// 모델에 projectId 추가
-		model.addAttribute("projectId", projectId);
 
 		// 팀장 정보 가져오기
 		UserDto teamLeader = projectService.getTeamLeaderByProjectId(projectId);
@@ -69,18 +70,23 @@ public class HomeController {
 		} else {
 			System.out.println("No team members found");
 		}
+		
+		// 모델에 projectId 추가
+		model.addAttribute("projectId", projectId);
 
 		// 모델에 데이터 추가
 		model.addAttribute("currentUser", currentUser);
 		model.addAttribute("projectName", project.getName());
 		model.addAttribute("teamLeader", teamLeader);
 		model.addAttribute("teamMembers", teamMembers);
+		
 
 		return "home"; // home.html 렌더링
 	}
-	@GetMapping("/uipage") // /uipage URL을 매핑
-	public String getUiPage() {
-		return "uipage"; // templates/uipage.html 반환
-	}
+	
+    @GetMapping("/uipage") // /uipage URL을 매핑
+    public String getUiPage() {
+        return "ui/uipage"; // 수정된 경로: templates/ui/uipage.html
+    }
 
 }

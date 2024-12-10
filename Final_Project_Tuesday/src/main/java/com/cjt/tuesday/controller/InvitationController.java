@@ -30,13 +30,12 @@ public class InvitationController {
 	@Autowired
 	private UserService userService;
 
+	//초대
 	@GetMapping("/invite")
 	public String showInviteForm(@RequestParam Integer projectId, Model model) {
 		model.addAttribute("projectId", projectId); // 프로젝트 ID 전달
 		return "invitations/invite"; // "invitations/invite.html" 렌더링
 	}
-
-
 	// 초대 전송
 	@PostMapping("/send")
 	public String sendInvitation(
@@ -57,7 +56,7 @@ public class InvitationController {
 		redirectAttributes.addFlashAttribute("inviteSuccess", "초대 메일이 전송되었습니다.");
 		return "redirect:/home?projectId=" + projectId; // 쿼리 파라미터 제거
 	}
-	
+	//초대 수락
 	@GetMapping("/accept")
 	public String acceptInvitation(@RequestParam("id") Integer id, HttpSession session, RedirectAttributes redirectAttributes) {
 	    try {
@@ -76,11 +75,25 @@ public class InvitationController {
 	            return "redirect:/user/addUser";
 	        }
 	        redirectAttributes.addFlashAttribute("error", "초대 수락 중 오류가 발생했습니다.");
-	        return "redirect:/project";
+	        return "redirect:/project/list";
 	    }
 	}
+	// 초대 거절
+	@GetMapping("/decline")
+	public String declineInvitation(@RequestParam("id") Integer id, RedirectAttributes redirectAttributes) {
+	    try {
+	        // 초대 거절 처리
+	        invitationService.declineInvitation(id);
 
-
+	        // 성공 메시지 추가
+	        redirectAttributes.addFlashAttribute("message", "초대를 거절하였습니다.");
+	    } catch (Exception e) {
+	        // 오류 처리
+	        redirectAttributes.addFlashAttribute("error", "초대 거절 중 오류가 발생했습니다.");
+	    }
+	    return "redirect:/project/list"; // 프로젝트 목록 페이지로 리디렉션
+	}
+	
 //	@GetMapping("/accept")
 //	public String acceptInvitation(
 //	        @RequestParam("id") Integer id,
@@ -109,19 +122,4 @@ public class InvitationController {
 //	    }
 //	}
 
-	// 초대 거절
-	@GetMapping("/decline")
-	public String declineInvitation(@RequestParam("id") Integer id, RedirectAttributes redirectAttributes) {
-	    try {
-	        // 초대 거절 처리
-	        invitationService.declineInvitation(id);
-
-	        // 성공 메시지 추가
-	        redirectAttributes.addFlashAttribute("message", "초대를 거절하였습니다.");
-	    } catch (Exception e) {
-	        // 오류 처리
-	        redirectAttributes.addFlashAttribute("error", "초대 거절 중 오류가 발생했습니다.");
-	    }
-	    return "redirect:/project"; // 프로젝트 목록 페이지로 리디렉션
-	}
 }

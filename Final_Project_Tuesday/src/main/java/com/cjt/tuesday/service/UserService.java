@@ -55,7 +55,7 @@ public class UserService {
 	        // 로그인 시 status를 active로 업데이트
 	        userMapper.updateStatus(userDto.getUserId(), "active");
 	        
-	        return "redirect:/project"; // 성공 시 홈으로 이동
+	        return "redirect:/project/list"; // 성공 시 홈으로 이동
 	    }
 
 	    System.out.println("로그인 실패");
@@ -143,7 +143,8 @@ public class UserService {
         userMapper.savePasswordResetToken(userDto.getUserId(), resetToken, expiresAt);
 
         // 동적으로 서버 URL 가져오기
-        String serverUrl = env.getProperty("app.server.url", "http://localhost:9090");
+        //와이파이마다 주소를 다르게 해야 함.
+        String serverUrl = env.getProperty("app.server.url", "http://192.168.0.2:80");
         String resetLink = serverUrl + "/user/resetPassword?token=" + resetToken;
 
         String emailContent = String.format(
