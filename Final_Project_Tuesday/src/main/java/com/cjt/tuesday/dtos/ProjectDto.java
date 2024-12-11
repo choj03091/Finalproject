@@ -1,7 +1,6 @@
 package com.cjt.tuesday.dtos;
 
 import java.security.Timestamp;
-import java.time.LocalDateTime;
 
 import lombok.Data;
 

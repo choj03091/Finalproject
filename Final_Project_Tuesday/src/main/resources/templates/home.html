@@ -25,7 +25,9 @@
 	<!-- 상단 헤더 -->
 	<header class="header">
 		<div class="header-left">
-			<img src="/images/tuesday.png" alt="로고" class="logo">
+			<a th:href="@{/home(projectId=${projectId})}"> <img
+				src="/images/tuesday.png" alt="로고" class="logo">
+			</a>
 		</div>
 		<h1 class="project-name" th:text="${projectName}">프로젝트 이름</h1>
 		<div class="header-icons">
@@ -91,10 +93,12 @@
 		<div class="center-content">
 			<div class="work-section">
 				<div class="work-card">
-					<a href="/uipage" class="work-card-link">UI</a>
+					<a th:href="'/umlpage?projectId=' + ${projectId}"
+						class="work-card-link">UML</a>
 				</div>
 				<div class="work-card">
-					<a href="/code-page" class="work-card-link">CODE</a>
+					<a th:href="'/uipage?projectId=' + ${projectId}"
+						class="work-card-link">UI</a>
 				</div>
 			</div>
 			<div class="summary-section">

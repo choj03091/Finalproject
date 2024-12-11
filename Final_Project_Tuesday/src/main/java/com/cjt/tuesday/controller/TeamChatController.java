@@ -37,16 +37,6 @@ public class TeamChatController {
         messagingTemplate.convertAndSend("/topic/chat/" + message.getProjectId(), message);
     }
 
-	/*
-	 * @MessageMapping("/chat/send")
-	 * 
-	 * @SendTo("/topic/chat/{projectId}") public TeamChatMessageDto
-	 * handleMessage(TeamChatMessageDto message) {
-	 * System.out.println("Received Message: " + message);
-	 * teamChatService.saveMessage(message); // 메시지를 데이터베이스에 저장 return message; //
-	 * 클라이언트로 메시지 브로드캐스트 }
-	 */
-    
     @GetMapping("/{projectId}")
     public List<TeamChatMessageDto> getMessages(@PathVariable Integer projectId) {
         List<TeamChatMessageDto> messages = teamChatService.getMessagesByProjectId(projectId);

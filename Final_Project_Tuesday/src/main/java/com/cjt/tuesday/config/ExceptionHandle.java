@@ -17,11 +17,4 @@ public class ExceptionHandle {
 		model.addAttribute("msg","오류가 발생하여 확인중입니다.");
 		return "error";
 	}
-	
-	
 }
-
-
-
-
-
