@@ -14,5 +14,6 @@ public class UserDto {
     private LocalDateTime createdAt; // 생성 시간
     private LocalDateTime updatedAt; // 수정 시간
     private String profileColor; // 프로필 색상
+    private Integer lastProjectId; // 마지막으로 방문한 프로젝트 ID
 
 }

@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Param;
 public interface InvitationMapper {
 
 	InvitationDto getInvitationById(@Param("id") Integer id);
+	
 	InvitationDto findInvitationById(@Param("id") Integer id);
 	
     void addToProjectMembers(@Param("projectId") Integer projectId, @Param("userId") Integer userId);
@@ -20,6 +21,11 @@ public interface InvitationMapper {
 	void saveInvitation(InvitationDto invitation); // 기존 createInvitation을 saveInvitation으로 수정
 	// 초대 상태 업데이트
 	void updateInvitationStatus(@Param("id") Integer id, @Param("status") String status);
+	
+    // 초대 상태가 accepted인 초대 목록 조회
+    List<InvitationDto> findAcceptedInvitationsByEmail(@Param("email") String email);
+
+	
 	// 초대 삭제
 	void deleteInvitation(@Param("id") Integer id);
 	

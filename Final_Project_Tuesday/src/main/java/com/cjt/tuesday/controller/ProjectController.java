@@ -7,10 +7,12 @@ import com.cjt.tuesday.service.ProjectService;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -46,9 +48,12 @@ public class ProjectController {
     }
 
 	// 새 프로젝트 추가 처리
+ // 새 프로젝트 추가 처리
     @PostMapping("/add")
     public String addProject(@RequestParam String name, 
                              @RequestParam(required = false) String description, 
+                             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate, 
+                             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate, 
                              HttpSession session) {
         UserDto currentUser = (UserDto) session.getAttribute("userDto");
 
@@ -58,13 +63,24 @@ public class ProjectController {
 
         ProjectDto project = new ProjectDto();
         project.setName(name);
-        project.setDescription(description);
+
+        // 현재 날짜로 기본값 설정
+        if (startDate == null) {
+            startDate = LocalDate.now();
+        }
+        project.setStartDate(startDate);
+
+        if (endDate == null) {
+            endDate = startDate.plusDays(30); // 기본적으로 30일 후로 설정
+        }
+        project.setEndDate(endDate);
 
         // 현재 사용자의 userId를 전달
         projectService.addProject(project, currentUser.getUserId());
 
         return "redirect:/project/list"; // 목록 페이지로 리디렉션
     }
+
 
 
 	// 프로젝트 이름 수정 처리

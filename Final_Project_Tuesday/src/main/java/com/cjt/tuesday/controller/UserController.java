@@ -3,6 +3,7 @@ package com.cjt.tuesday.controller;
 import com.cjt.tuesday.command.AddUserCommand;
 import com.cjt.tuesday.command.LoginCommand;
 import com.cjt.tuesday.dtos.UserDto;
+import com.cjt.tuesday.service.InvitationService;
 import com.cjt.tuesday.service.UserService;
 import com.cjt.tuesday.mapper.UserMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,12 +14,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,7 +37,13 @@ public class UserController {
 	private UserService userService;
 
 	@Autowired
+	private InvitationService invitationService;
+
+	@Autowired
 	private UserMapper userMapper;
+
+	@Autowired
+	private SimpMessagingTemplate messagingTemplate;
 
 	// 로그인 폼 이동
 	@GetMapping("/login")
@@ -42,36 +53,39 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	public String login(@Validated LoginCommand loginCommand,
-			BindingResult result,
-			Model model,
-			HttpServletRequest request) {
-		if (result.hasErrors()) {
-			model.addAttribute("errorMessage", "아이디 또는 비밀번호가 틀립니다.");
-			return "user/login";
+	public String login(@RequestParam String email, 
+			@RequestParam String password, 
+			HttpSession session, 
+			RedirectAttributes redirectAttributes) {
+		try {
+			UserDto user = userService.login(email, password);
+
+			if (user != null) {
+				session.setAttribute("userDto", user);
+
+				// WebSocket 메시지 전송
+				messagingTemplate.convertAndSend("/topic/status", user);
+
+				// 초대 상태가 accepted인 경우 팀원으로 추가
+				if (invitationService.hasAcceptedInvitations(email)) {
+					invitationService.addUserToProjects(email);
+				}
+
+				// 마지막 프로젝트 ID로 리디렉션
+				if (user.getLastProjectId() != null) {
+					return "redirect:/home?projectId=" + user.getLastProjectId();
+				} else {
+					return "redirect:/project/list"; // 기본 프로젝트 목록 페이지로 이동
+				}
+			} else {
+				redirectAttributes.addFlashAttribute("error", "잘못된 이메일 또는 비밀번호입니다.");
+				return "redirect:/user/login";
+			}
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "로그인 중 오류가 발생했습니다.");
+			return "redirect:/user/login";
 		}
-
-		String redirectPath = userService.login(loginCommand, request);
-
-		if ("redirect:/user/login".equals(redirectPath)) {
-			// 로그인 실패 시 메시지 추가
-			model.addAttribute("errorMessage", "이메일 또는 비밀번호가 틀립니다.");
-			return "user/login";
-		}
-
-		// 초대 수락 로직 추가
-		HttpSession session = request.getSession();
-		Integer inviteId = (Integer) session.getAttribute("inviteId");
-
-		if (inviteId != null) {
-			// 초대 ID가 존재하면 초대 수락으로 리디렉트
-			session.removeAttribute("inviteId"); // 초대 ID 제거
-			return "redirect:/invitations/accept?id=" + inviteId;
-		}
-
-		return redirectPath; // 초대와 관계없는 일반 로그인 처리
 	}
-
 
 	// 회원가입 폼 이동
 	@GetMapping("/addUser")
@@ -121,16 +135,41 @@ public class UserController {
 	// 로그아웃 처리
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
-		UserDto userDto = (UserDto) session.getAttribute("userDto");
+	    UserDto user = (UserDto) session.getAttribute("userDto");
 
-		if (userDto != null) {
-			// 상태를 inactive로 업데이트
-			userMapper.updateStatus(userDto.getUserId(), "inactive");
-		}
+	    if (user != null) {
+	        userService.logout(user.getUserId()); // userId 전달
 
-		session.invalidate(); // 세션 무효화
-		return "redirect:/user/login"; // 로그인 페이지로 리디렉션
+	        // WebSocket 메시지 전송
+	        messagingTemplate.convertAndSend("/topic/status", user);
+
+	        session.invalidate(); // 세션 무효화
+	    }
+
+	    return "redirect:/user/login";
 	}
+
+	@PostMapping("/logout-auto")
+	public ResponseEntity<String> autoLogout(@RequestBody Map<String, Integer> payload) {
+	    Integer userId = payload.get("userId");
+
+	    if (userId != null) {
+	        UserDto user = userService.findUserById(userId);
+	        if (user != null) {
+	            userService.logout(userId);
+
+	            // WebSocket 메시지 전송
+	            messagingTemplate.convertAndSend("/topic/status", user);
+
+	            return ResponseEntity.ok("로그아웃 처리 완료");
+	        }
+	    }
+
+	    return ResponseEntity.badRequest().body("유효하지 않은 요청");
+	}
+
+
+
 	@GetMapping("/profile")
 	public String userProfile(HttpSession session, Model model) {
 		UserDto userDto = (UserDto) session.getAttribute("userDto");

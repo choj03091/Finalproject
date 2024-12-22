@@ -4,6 +4,7 @@ import com.cjt.tuesday.dtos.PasswordResetTokenDto;
 import com.cjt.tuesday.dtos.UserDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.data.repository.query.Param;
@@ -12,9 +13,21 @@ import org.springframework.data.repository.query.Param;
 public interface UserMapper {
 	
     void updateStatus(@Param("userId") Integer userId, @Param("status") String status);
-
+    // 모든 사용자 조회
+    List<UserDto> getAllUsers();
+    
+    // 사용자 ID로 사용자 정보 조회
+    UserDto findUserById(@Param("userId") Integer userId);
+    
 	// 이메일로 사용자 조회
 	UserDto findUserByEmail(String email);
+	
+    // 사용자 ID로 마지막 방문한 프로젝트 ID 조회
+    Integer getLastProjectId(@Param("userId") Integer userId);
+    
+    // 사용자 상태 업데이트
+    void updateUserStatus(@Param("userId") Integer userId, @Param("status") String status);
+
 
 	// 사용자 추가 (회원가입)
 	void addUser(UserDto userDto);
@@ -41,7 +54,6 @@ public interface UserMapper {
 	int updatePassword(@Param("userId") Integer userId, @Param("password") String password);
 	
 	void deletePasswordResetToken(String token);
-
 
 
 }

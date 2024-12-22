@@ -1,6 +1,8 @@
 package com.cjt.tuesday.dtos;
 
+
 import java.security.Timestamp;
+import java.time.LocalDate;
 
 import lombok.Data;
 
@@ -8,9 +10,8 @@ import lombok.Data;
 public class ProjectDto {
     private Integer id;
     private String name;
-    private String description;
     private Integer userId;
     private Integer teamLeaderId; // 팀장 ID
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private LocalDate startDate;
+    private LocalDate endDate;
 }

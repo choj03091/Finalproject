@@ -13,8 +13,6 @@
 		<result column="password" property="password" />
 		<result column="title" property="title" />
 		<result column="status" property="status" />
-		<result column="created_at" property="createdAt" />
-		<result column="updated_at" property="updatedAt" />
 		<result column="profile_color" property="profileColor" />
 	</resultMap>
 
@@ -27,6 +25,27 @@
 	</resultMap>
 
 
+	<select id="findUserById" parameterType="int"
+		resultType="com.cjt.tuesday.dtos.UserDto">
+		SELECT user_id AS userId, username, email, password, title, status,
+		profile_color AS profileColor, last_project_id AS lastProjectId
+		FROM users
+		WHERE user_id = #{userId};
+	</select>
+
+	<!-- 모든 사용자 조회 -->
+	<select id="getAllUsers"
+		resultType="com.cjt.tuesday.dtos.UserDto">
+		SELECT
+		user_id AS userId,
+		username,
+		email,
+		title,
+		status,
+		profile_color AS profileColor
+		FROM users;
+	</select>
+
 	<!-- 사용자 ID로 사용자 조회 -->
 	<select id="getUser" parameterType="int"
 		resultMap="userResultMap">
@@ -35,8 +54,10 @@
 
 	<!-- 사용자 추가 (회원가입) -->
 	<insert id="addUser">
-		INSERT INTO users (username, email, password, title, status, profile_color)
-		VALUES (#{username}, #{email}, #{password}, #{title}, 'inactive',
+		INSERT INTO users (username, email, password, title,
+		status, profile_color)
+		VALUES (#{username}, #{email}, #{password},
+		#{title}, 'inactive',
 		#{profileColor});
 	</insert>
 
@@ -51,34 +72,50 @@
 		#{userId};
 	</update>
 
-	<select id="findUserByEmail" resultMap="userResultMap"> SELECT * FROM
+	<select id="findUserByEmail" resultMap="userResultMap">
+		SELECT * FROM
 		users WHERE
 		email = #{email}
 	</select>
 
+	<!-- 마지막 프로젝트 ID 조회 -->
+	<select id="getLastProjectId" parameterType="int"
+		resultType="int">
+		SELECT last_project_id
+		FROM users
+		WHERE user_id = #{userId};
+	</select>
+
+	<update id="updateUserStatus">
+		UPDATE users
+		SET status = #{status}
+		WHERE user_id =
+		#{userId};
+	</update>
 
 
 	<!-- 사용자 정보 업데이트 -->
 	<update id="updateUser">
 		UPDATE users
 		SET username = #{username}, title =
-		#{title}, updated_at = NOW()
+		#{title}
 		WHERE user_id = #{userId}
 	</update>
 
 	<!-- 사용자 직책 업데이트 -->
 	<update id="updateTitle">
 		UPDATE users
-		SET title = #{title}, updated_at = NOW()
-		WHERE user_id = #{userId}
+		SET title = #{title}
+		WHERE user_id =
+		#{userId}
 	</update>
 
 	<!-- 이메일로 비밀번호 업데이트 -->
 	<update id="updatePasswordByEmail">
 		UPDATE users
-		SET password = #{password}, updated_at =
-		NOW()
-		WHERE email = #{email}
+		SET password = #{password}
+		WHERE email =
+		#{email}
 	</update>
 
 	<!-- 비밀번호 재설정 토큰 저장 -->
@@ -99,9 +136,9 @@
 	<!-- 사용자 ID로 비밀번호 업데이트 -->
 	<update id="updatePassword">
 		UPDATE users
-		SET password = #{password}, updated_at =
-		NOW()
-		WHERE user_id = #{userId}
+		SET password = #{password}
+		WHERE user_id =
+		#{userId}
 	</update>
 
 	<!-- 비밀번호 재설정 토큰 삭제 -->
@@ -110,5 +147,7 @@
 		WHERE token =
 		#{token}
 	</delete>
+
+
 
 </mapper>
