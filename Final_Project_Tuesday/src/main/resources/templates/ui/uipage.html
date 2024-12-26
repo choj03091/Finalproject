@@ -5,19 +5,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>현재 프로젝트</title>
 <link rel="stylesheet" href="/css/layout.css">
-<link rel="stylesheet" href="/css/mouse.css">
+<link rel="stylesheet" href="/css/uipage.css">
 <link rel="stylesheet" href="/css/teamchat.css">
 <link
 	href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,600&display=swap"
 	rel="stylesheet">
+<link
+	href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+	rel="stylesheet">
+<link rel="stylesheet" href="css/uipage.css">
 <script
-	src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+	src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
 <script
-	src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+	src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<script
+	src="https://cdn.tiny.cloud/1/fndbajzi8n2uqbnvjahc2ot2w5xn32ubaw07sb637ykzlx1p/tinymce/6/tinymce.min.js"
+	referrerpolicy="origin">
+	
+</script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js">
+	
+</script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js">
+	
+</script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js">
+	
+</script>
 <script src="/js/teaminfo.js" type="module"></script>
 <script src="/js/teamchat.js" type="module"></script>
 <script type="module" src="/js/mouse.js"></script>
 
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 
 </head>
 <body>
@@ -93,9 +117,51 @@
 			<button id="inviteButton" class="invite-btn"
 				th:data-project-id="${projectId}">팀원 초대</button>
 		</aside>
-		<!-- Hidden inputs for Thymeleaf variables -->
+		<!-- 중앙 보드 영역 -->
+		<!-- 중앙 보드 영역 -->
+		<div class="center-content">
+		<body class="uipage">
+    <div id="app">
+        <div id="toolbar">
+            <button id="addSlide">슬라이드 추가</button>
+            <button id="addText">텍스트 추가</button>
+            <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+            <button id="addImage">이미지 추가</button>
+            <select id="addShape">
+                <option value="">도형 추가</option>
+                <option value="rectangle">사각형</option>
+                <option value="circle">원</option>
+                <option value="triangle">삼각형</option>
+            </select>
+            <button id="deleteElement">선택 요소 삭제</button>
+            <button id="deleteSlide">슬라이드 삭제</button>
+            <button id="moveSlideUp">슬라이드 위로</button>
+            <button id="moveSlideDown">슬라이드 아래로</button>
+            <button id="startPresentation">프레젠테이션 시작</button>
+            <button id="exportPPT">PPT 출력</button>
+        </div>
+        <div id="editPanel" class="hidden">
+            <label>크기: <input type="range" id="sizeAdjust" min="10" max="200" value="100"></label>
+            <label>색상: <input type="color" id="colorPicker"></label>
+        </div>
+        <div id="slideContainer"></div>
+    </div>
+    <div id="presentationMode" class="hidden">
+        <div id="currentSlide"></div>
+        <div id="presentationControls">
+            <button id="prevSlide">이전</button>
+            <button id="nextSlide">다음</button>
+            <button id="exitPresentation">종료</button>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="/js/fabriceditor.js"></script>
+</body>
 
-		<!-- Hidden inputs for Thymeleaf variables -->
+
+
+			<!-- Hidden inputs for Thymeleaf variables -->
 		<input type="hidden" id="project-id" th:value="${projectId}" /> <input
 			type="hidden" id="current-user-id" th:value="${currentUser.userId}" />
 		<input type="hidden" id="current-user-name"
