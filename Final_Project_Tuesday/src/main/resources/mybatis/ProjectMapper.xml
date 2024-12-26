@@ -22,12 +22,20 @@
 	</select>
 
 	<!-- 프로젝트 ID로 단일 프로젝트 가져오기 -->
-	<select id="findProjectById"
+	<select id="findProjectById" parameterType="int"
 		resultType="com.cjt.tuesday.dtos.ProjectDto">
-		SELECT *
+		SELECT
+		id AS id,
+		name AS name,
+		user_id AS userId,
+		team_leader_id AS teamLeaderId,
+		start_date AS startDate,
+		end_date AS
+		endDate
 		FROM projects
 		WHERE id = #{projectId}
 	</select>
+
 
 	<select id="findProjectNameById" resultType="String">
 		SELECT name FROM
@@ -38,7 +46,8 @@
 	<insert id="addProject">
 		INSERT INTO projects (name, user_id, team_leader_id,
 		start_date, end_date)
-		VALUES (#{name}, #{userId}, #{teamLeaderId}, #{startDate}, #{endDate});
+		VALUES (#{name}, #{userId}, #{teamLeaderId},
+		#{startDate}, #{endDate});
 	</insert>
 
 	<!-- 프로젝트 이름 업데이트 -->

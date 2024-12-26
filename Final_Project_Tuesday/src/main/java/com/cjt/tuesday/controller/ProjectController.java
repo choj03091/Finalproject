@@ -108,4 +108,22 @@ public class ProjectController {
         projectService.deleteProject(projectId);
         return "redirect:/project/list"; // 목록 페이지로 리디렉션
     }
+    
+ // 특정 프로젝트의 시작일 및 종료일 반환
+    @GetMapping("/{projectId}/dates")
+    @ResponseBody
+    public ProjectDto getProjectDates(@PathVariable Integer projectId, HttpSession session) {
+        UserDto user = (UserDto) session.getAttribute("userDto");
+        if (user == null) {
+            throw new RuntimeException("사용자가 로그인하지 않았습니다."); // 예외 처리
+        }
+
+        ProjectDto project = projectService.getProjectById(projectId);
+        if (project == null) {
+            throw new RuntimeException("프로젝트를 찾을 수 없습니다."); // 예외 처리
+        }
+
+        return project; // JSON 형식으로 반환
+    }
+
 }

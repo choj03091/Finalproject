@@ -32,9 +32,9 @@ public class UserService {
 
 	@Autowired
 	private EmailService emailService;
-	
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+
+	@Autowired
+	private SimpMessagingTemplate messagingTemplate;
 
 	@Autowired
 	private Environment env; // Spring 환경 변수 주입
@@ -50,32 +50,36 @@ public class UserService {
 
 	// 로그인 처리
 	public UserDto login(String email, String password) {
-        // 데이터베이스에서 사용자 정보 조회
-        UserDto userDto = userMapper.findUserByEmail(email);
+		// 데이터베이스에서 사용자 정보 조회
+		UserDto userDto = userMapper.findUserByEmail(email);
 
-        if (userDto != null && passwordEncoder.matches(password, userDto.getPassword())) {
-            // 마지막 프로젝트 ID 설정
-            Integer lastProjectId = userMapper.getLastProjectId(userDto.getUserId());
-            
-            userMapper.updateUserStatus(userDto.getUserId(), "active");
-            userDto.setStatus("active");
-            userDto.setLastProjectId(lastProjectId);
+		if (userDto != null && passwordEncoder.matches(password, userDto.getPassword())) {
+			// 마지막 프로젝트 ID 설정
+			Integer lastProjectId = userMapper.getLastProjectId(userDto.getUserId());
 
-            return userDto; // 성공적으로 인증된 사용자 반환
-        }
+			userMapper.updateUserStatus(userDto.getUserId(), "active");
+			userDto.setStatus("active");
+			userDto.setLastProjectId(lastProjectId);
 
-        throw new RuntimeException("잘못된 이메일 또는 비밀번호입니다.");
-    }
+			return userDto; // 성공적으로 인증된 사용자 반환
+		}
+
+		throw new RuntimeException("잘못된 이메일 또는 비밀번호입니다.");
+	}
 	
-	 public UserDto findUserById(Integer userId) {
-	        return userMapper.findUserById(userId);
-	    }
-
-    // 로그아웃 처리
-    public void logout(Integer userId) {
-        // 사용자 상태를 inactive로 업데이트
-        userMapper.updateUserStatus(userId, "inactive");
+    public boolean isPasswordCorrect(UserDto user, String rawPassword) {
+        return passwordEncoder.matches(rawPassword, user.getPassword());
     }
+
+	public UserDto findUserById(Integer userId) {
+		return userMapper.findUserById(userId);
+	}
+
+	// 로그아웃 처리
+	public void logout(Integer userId) {
+		// 사용자 상태를 inactive로 업데이트
+		userMapper.updateUserStatus(userId, "inactive");
+	}
 
 	// 회원가입 처리
 	public void addUser(AddUserCommand addUserCommand) throws Exception {
@@ -116,11 +120,11 @@ public class UserService {
 	public boolean isEmailDuplicate(String email) {
 		return userMapper.findUserByEmail(email) != null;
 	}
-	
-    // 모든 사용자 조회
-    public List<UserDto> getAllUsers() {
-        return userMapper.getAllUsers();
-    }
+
+	// 모든 사용자 조회
+	public List<UserDto> getAllUsers() {
+		return userMapper.getAllUsers();
+	}
 
 
 	public UserDto getUser(int userId) {

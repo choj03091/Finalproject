@@ -78,14 +78,16 @@ public class UserController {
 					return "redirect:/project/list"; // 기본 프로젝트 목록 페이지로 이동
 				}
 			} else {
-				redirectAttributes.addFlashAttribute("error", "잘못된 이메일 또는 비밀번호입니다.");
+				redirectAttributes.addFlashAttribute("errorMessage", "잘못된 이메일 또는 비밀번호입니다.");
 				return "redirect:/user/login";
 			}
 		} catch (Exception e) {
-			redirectAttributes.addFlashAttribute("error", "로그인 중 오류가 발생했습니다.");
+		    e.printStackTrace(); // 콘솔에 예외 출력
+			redirectAttributes.addFlashAttribute("errorMessage", "잘못된 이메일 또는 비밀번호입니다.");
 			return "redirect:/user/login";
 		}
 	}
+
 
 	// 회원가입 폼 이동
 	@GetMapping("/addUser")

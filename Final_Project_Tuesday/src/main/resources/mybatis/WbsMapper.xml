@@ -27,27 +27,43 @@
 	<insert id="insertWbs"
 		parameterType="com.cjt.tuesday.dtos.WbsDto" useGeneratedKeys="true"
 		keyProperty="id">
-		INSERT INTO wbs (project_id, task_name, assignee, status, start_date,
+		INSERT INTO wbs (project_id, task_name, assignee, status,
+		start_date,
 		end_date, duration, progress)
-		VALUES (#{projectId}, #{taskName}, #{assignee}, #{status}, #{startDate},
-		#{endDate}, #{duration}, #{progress})
+		VALUES (#{projectId},
+		#{taskName}, #{assignee}, #{status}, #{startDate},
+		#{endDate},
+		#{duration}, #{progress})
 	</insert>
 
 	<update id="updateWbs"
 		parameterType="com.cjt.tuesday.dtos.WbsDto">
 		UPDATE wbs
 		SET task_name = #{taskName},
-		assignee = #{assignee},
+		assignee =
+		#{assignee},
 		status = #{status},
 		start_date = #{startDate},
-		end_date = #{endDate},
+		end_date =
+		#{endDate},
 		updated_at = NOW()
 		WHERE id = #{id}
 	</update>
 
 
 	<delete id="deleteWbs" parameterType="int">
-		DELETE FROM wbs WHERE id = #{id}
+		DELETE FROM wbs WHERE id =
+		#{id}
 	</delete>
+
+	<select id="findProjectDates" parameterType="int"
+		resultType="com.cjt.tuesday.dtos.ProjectDto">
+		SELECT start_date AS startDate, end_date AS endDate
+		FROM projects
+		WHERE id = #{projectId}
+	</select>
+
+
+
 
 </mapper>

@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="/css/mouse.css">
 <link rel="stylesheet" href="/css/wbs.css">
 
+
 <link
 	href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,600&display=swap"
 	rel="stylesheet">
@@ -22,6 +23,13 @@
 <script src="/js/teamchat.js" type="module"></script>
 <script type="module" src="/js/mouse.js"></script>
 <script src="/js/wbs.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+<script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/locale/ko/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+
+
 
 
 <script
@@ -118,16 +126,9 @@
 					<!-- 작업 목록 렌더링 -->
 				</tbody>
 			</table>
-			<button id="add-wbs-btn">작업 추가</button>
+			<button id="add-wbs-btn" onclick="openAddWbsModal()">작업 추가</button>
 		</div>
 
-		<!-- Gantt Chart 섹션 -->
-		<div class="gantt-section">
-			<h2>Gantt Chart</h2>
-			<div id="gantt-container">
-				<div id="gantt-timeline" class="gantt-timeline"></div>
-			</div>
-		</div>
 		<!-- Hidden inputs for Thymeleaf variables -->
 		<input type="hidden" id="project-id" th:value="${projectId}" /> <input
 			type="hidden" id="current-user-id" th:value="${currentUser.userId}" />
@@ -151,6 +152,12 @@
 
 			<button id="send-button" style="width: 20%;">Send</button>
 		</div>
+
+		<div>
+			<h2>WBS 작업 기간 그래프</h2>
+			<canvas id="wbs-chart"></canvas>
+		</div>
+
 
 		<!-- JS 초기화 -->
 		<script type="module">
@@ -194,17 +201,19 @@
 					<option value="개발중">개발중</option>
 					<option value="완료">완료</option>
 				</select> <label for="startDate">시작일:</label> <input type="date"
-					id="startDate" name="startDate"> <label for="endDate">종료일:</label>
-				<input type="date" id="endDate" name="endDate">
+					id="startDate" name="startDate" required> <label
+					for="endDate">종료일:</label> <input type="date" id="endDate"
+					name="endDate" required>
 
 				<button type="submit">추가</button>
 			</form>
+
 		</div>
 	</div>
 	<!-- 작업 수정 모달 -->
 	<div id="edit-wbs-modal" class="modal">
 		<div class="modal-content">
-			<span class="close" onclick="closeAddWbsModal()">&times;</span>
+			<span class="close" onclick="closeEditWbsModal()">&times;</span>
 			<h2>작업 수정</h2>
 			<form id="edit-wbs-form">
 				<input type="hidden" id="edit-task-id"> <label
@@ -218,14 +227,14 @@
 					<option value="개발중">개발중</option>
 					<option value="완료">완료</option>
 				</select> <label for="edit-startDate">시작일:</label> <input type="date"
-					id="edit-startDate" name="startDate"> <label
+					id="edit-startDate" name="startDate" required> <label
 					for="edit-endDate">종료일:</label> <input type="date"
-					id="edit-endDate" name="endDate">
+					id="edit-endDate" name="endDate" required>
 
 				<button type="submit">수정</button>
 			</form>
+
 		</div>
 	</div>
-
 </body>
 </html>
