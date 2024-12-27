@@ -25,7 +25,8 @@
 <script src="/js/wbs.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-<script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/locale/ko/index.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/locale/ko/index.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
 
@@ -140,6 +141,7 @@
 			type="hidden" id="project-end-date" th:value="${projectEndDate}" />
 
 		<!-- 채팅 UI -->
+		<!-- 채팅 UI -->
 		<div id="chat-container" class="chat-expanded">
 			<div id="chat-header">
 				Team Chat
@@ -147,10 +149,18 @@
 			</div>
 			<div id="chat-notification" class="hidden">새로운 메시지가 도착했습니다.</div>
 			<div id="chat-messages"></div>
-			<input id="chat-input" type="text" style="width: 80%;"
-				placeholder="메시지를 입력하세요" />
-
-			<button id="send-button" style="width: 20%;">Send</button>
+			<div id="chat-footer">
+				<input id="chat-input" type="text" placeholder="메시지를 입력하세요" />
+				<button id="send-button">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none"
+						viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+							stroke-width="2" d="M3 10l9-7 9 7-9 7-9-7z" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+							stroke-width="2" d="M3 10v10a1 1 0 001 1h16a1 1 0 001-1V10" />
+            </svg>
+				</button>
+			</div>
 		</div>
 
 		<div>

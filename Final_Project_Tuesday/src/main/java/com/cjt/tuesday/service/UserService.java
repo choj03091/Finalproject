@@ -169,7 +169,7 @@ public class UserService {
 
 		// 동적으로 서버 URL 가져오기
 		//와이파이마다 주소를 다르게 해야 함.
-		String serverUrl = env.getProperty("app.server.url", "http://192.168.0.2:80");
+		String serverUrl = env.getProperty("app.server.url", "http://192.168.22.108:80");
 		String resetLink = serverUrl + "/user/resetPassword?token=" + resetToken;
 
 		String emailContent = String.format(

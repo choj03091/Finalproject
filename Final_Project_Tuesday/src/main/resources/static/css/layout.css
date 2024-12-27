@@ -854,3 +854,10 @@ body {
 .chat-container.hidden {
 	display: none;
 }
+
+/* umlpage.html에서만 중앙 배치 해제 */
+body.umlpage .center-content {
+    justify-content: flex-start; /* 상단 정렬 */
+    align-items: flex-start; /* 좌측 정렬 */
+    flex-direction: row; /* 가로 배치 (선택 사항) */
+}

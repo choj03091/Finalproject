@@ -123,10 +123,11 @@
 			</div>
 			<div class="summary-section">
 				<!-- 미니 간트 차트 -->
-				<a th:href="'/wbspage?projectId=' + ${projectId}" id="mini-gantt"
-					style="height: 150px; width: 100%;">
-					<div style="margin-top: 20px;"></div>
-				</a>
+				<div class="work-card">
+					<a th:href="'/wbspage?projectId=' + ${projectId}"
+						class="work-card-link">WBS</a>
+				</div>
+
 			</div>
 
 
@@ -141,10 +142,18 @@
 			</div>
 			<div id="chat-notification" class="hidden">새로운 메시지가 도착했습니다.</div>
 			<div id="chat-messages"></div>
-			<input id="chat-input" type="text" style="width: 80%;"
-				placeholder="메시지를 입력하세요" />
-
-			<button id="send-button" style="width: 20%;">Send</button>
+			<div id="chat-footer">
+				<input id="chat-input" type="text" placeholder="메시지를 입력하세요" />
+				<button id="send-button">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none"
+						viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+							stroke-width="2" d="M3 10l9-7 9 7-9 7-9-7z" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+							stroke-width="2" d="M3 10v10a1 1 0 001 1h16a1 1 0 001-1V10" />
+            </svg>
+				</button>
+			</div>
 		</div>
 	</div>
 	<!-- JS 초기화 -->

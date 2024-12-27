@@ -43,8 +43,8 @@ public class InvitationService {
 		
 		//서버를 킨 경우 서버 킨 사람의 IP로.
 		//port번호 확인. 조재희 port번호는 80
-		String acceptUrl = "http://localhost:80/invitations/accept?id=" + invitation.getId();
-		String declineUrl = "http://localhost:80/invitations/decline?id=" + invitation.getId();
+		String acceptUrl = "http://192.168.22.108:80/invitations/accept?id=" + invitation.getId();
+		String declineUrl = "http://192.168.22.108:80/invitations/decline?id=" + invitation.getId();
 
 		String subject = "프로젝트 초대: " + projectName;
 		String htmlContent = String.format(
