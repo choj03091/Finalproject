@@ -41,7 +41,7 @@
 
 | 구분 | 기술 |
 |------|------|
-| **Backend** | Java 11, Spring Boot, MyBatis, MariaDB, WebSocket |
+| **Backend** | Spring Boot, MyBatis, MariaDB, WebSocket |
 | **Frontend** | Thymeleaf, HTML5, CSS3, JavaScript |
 | **WAS** | Spring Boot 내장 Tomcat 9.0 |
 | **개발 도구** | Eclipse, GitHub, HeidiSQL, Google Drive |
@@ -56,11 +56,10 @@
 | 팀 생성 및 팀원 초대 | ![팀 관리](./images/team-invite.png) |
 | 실시간 마우스 공유 | ![마우스 공유](./images/mouse-cursor.png) |
 | 채팅 기능 | ![채팅](./images/chat.png) |
-| UML 다이어그램 작성 | ![UML](./images/uml.png) |
+| UML 다이어그램 작성 | ![image](https://github.com/user-attachments/assets/1d8c92f4-b96a-41f3-870c-4adb68fed1df)
+ |
 | 작업 일정(WBS) 관리 | ![WBS](./images/wbs-chart.png) |
 | 메일 발송 화면 | ![SMTP](./images/smtp.png) |
-
-> 위 이미지는 실제 사용 중인 인터페이스를 캡처한 것입니다.
 
 ---
 
